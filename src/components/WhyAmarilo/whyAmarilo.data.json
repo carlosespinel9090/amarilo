@@ -1,0 +1,28 @@
+{
+  "badge": "¿Por qué Amarilo?",
+  "title": "Te acompañamos en cada paso",
+  "description": "Herramientas, confianza y contenido útil para que decidas con seguridad.",
+  "items": [
+    {
+      "icon": "card",
+      "title": "Herramientas",
+      "description": "Simuladores de cuota, perfilador de proyectos y comparador lado a lado para decidir sin fricción.",
+      "linkText": "Ver herramientas",
+      "linkHref": "/herramientas"
+    },
+    {
+      "icon": "shield",
+      "title": "Confianza",
+      "description": "+40 años, miles de familias y premios del sector. Entregas cumplidas que respaldan tu inversión.",
+      "linkText": "Conoce más",
+      "linkHref": "/confianza"
+    },
+    {
+      "icon": "device",
+      "title": "Contenido útil",
+      "description": "Guías de compra, educación financiera e inversión inmobiliaria para comprar mejor informado.",
+      "linkText": "Ir al blog",
+      "linkHref": "/blog"
+    }
+  ]
+}

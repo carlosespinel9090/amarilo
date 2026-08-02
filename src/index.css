@@ -1,1 +1,237 @@
 @import "tailwindcss";
+
+@theme {
+  /* ==========================================================
+     COLORS - BRAND
+  ========================================================== */
+
+  --color-yellow: #FFCB00;
+  --color-yellow-deep: #F2BE00;
+  --color-yellow-press: #E0AF00;
+  --color-yellow-soft: #FFF3C4;
+
+  --color-ink: #161616;
+  --color-cream: #F4F1E8;
+
+  /* ==========================================================
+     COLORS - NEUTRAL
+  ========================================================== */
+
+  --color-white: #FFFFFF;
+
+  --color-n-50: #F7F5EF;
+  --color-n-100: #ECE9E0;
+  --color-n-200: #DAD6CB;
+  --color-n-300: #BDB8AB;
+  --color-n-400: #908B7E;
+  --color-n-500: #6B675C;
+  --color-n-600: #4A473F;
+
+  /* ==========================================================
+     COLORS - STATES
+  ========================================================== */
+
+  --color-success: #2E7D32;
+  --color-warning: #F39A00;
+  --color-error: #D32F2F;
+  --color-info: #1565C0;
+
+  /* ==========================================================
+     TYPOGRAPHY
+  ========================================================== */
+
+  --font-sans: "Montserrat", sans-serif;
+
+  /* Font Weights */
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-black: 800;
+
+  /* Display */
+
+  --text-display: 2.875rem; /* 46px */
+  --text-display--line-height: 2rem; /* 32px */
+  --text-display--font-weight: 800;
+
+  /* Headings */
+
+  --text-h1: 2.25rem; /* 36px */
+  --text-h1--line-height: 1.75rem; /* 28px */
+  --text-h1--font-weight: 700;
+
+  --text-h2: 1.75rem; /* 28px */
+  --text-h2--line-height: 1.4375rem; /* 23px */
+  --text-h2--font-weight: 700;
+
+  --text-h3: 1.375rem; /*22px*/
+  --text-h3--line-height: 1.1875rem; /*19px*/
+  --text-h3--font-weight: 700;
+
+  --text-h4: 1.125rem; /*18px*/
+  --text-h4--line-height: 1.0625rem; /*17px*/
+  --text-h4--font-weight: 700;
+
+  --text-h5: 1rem; /*16px*/
+  --text-h5--line-height: 0.9375rem; /*15px*/
+  --text-h5--font-weight: 700;
+
+  --text-h6: 0.875rem; /*14px*/
+  --text-h6--line-height: 1rem;
+  --text-h6--font-weight: 700;
+  --text-h6--letter-spacing: .08em;
+
+  /* Body */
+
+  --text-body-lg: 1.125rem; /*18*/
+  --text-body-lg--line-height: 1.0625rem; /*17*/
+  --text-body-lg--font-weight: 400;
+
+  --text-body: 1rem; /*16*/
+  --text-body--line-height: 1.5rem; /*24*/
+  --text-body--font-weight: 400;
+
+  --text-body-sm: .875rem; /*14*/
+  --text-body-sm--line-height: 1.25rem; /*20*/
+  --text-body-sm--font-weight: 400;
+
+  /* Label */
+
+  --text-label: .8125rem; /*13*/
+  --text-label--line-height: 1rem;
+  --text-label--font-weight: 700;
+  --text-label--letter-spacing: .08em;
+
+  /* Caption */
+
+  --text-caption: .75rem; /*12*/
+  --text-caption--line-height: 1rem;
+  --text-caption--font-weight: 400;
+
+  /* ==========================================================
+     SPACING
+  ========================================================== */
+
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  --spacing-3xl: 64px;
+
+  /* ==========================================================
+     BORDER RADIUS
+  ========================================================== */
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 18px;
+  --radius-pill: 9999px;
+
+  /* ==========================================================
+     BUTTONS
+  ========================================================== */
+
+  --button-height-sm: 38px;
+  --button-height-md: 46px;
+  --button-height-lg: 54px;
+
+  --button-padding-x-sm: 16px;
+  --button-padding-x-md: 24px;
+  --button-padding-x-lg: 32px;
+
+  /* ==========================================================
+     INPUTS
+  ========================================================== */
+
+  --input-height-sm: 38px;
+  --input-height-md: 46px;
+  --input-height-lg: 54px;
+
+  /* ==========================================================
+     ICONS
+  ========================================================== */
+
+  --icon-xs: 16px;
+  --icon-sm: 20px;
+  --icon-md: 24px;
+  --icon-lg: 32px;
+  --icon-xl: 48px;
+
+  /* ==========================================================
+     SHADOWS
+  ========================================================== */
+
+  --shadow-card: 0 6px 18px rgb(0 0 0 / 8%);
+  --shadow-modal: 0 12px 40px rgb(0 0 0 / 16%);
+
+  /* ==========================================================
+     CONTAINERS
+  ========================================================== */
+
+  --container-xs: 20rem;
+  --container-sm: 24rem;
+  --container-md: 28rem;
+  --container-lg: 32rem;
+  --container-xl: 36rem;
+  --container-2xl: 42rem;
+  --container-3xl: 48rem;
+  --container-4xl: 56rem;
+  --container-5xl: 64rem;
+  --container-6xl: 72rem;
+  --container-7xl: 75rem;
+
+  /* ==========================================================
+     BREAKPOINTS
+  ========================================================== */
+
+  --breakpoint-tablet: 48rem;
+  --breakpoint-desktop: 64rem;
+
+  /* ==========================================================
+     GRID
+  ========================================================== */
+
+  --grid-columns-mobile: 4;
+  --grid-columns-tablet: 8;
+  --grid-columns-desktop: 12;
+
+  --grid-gutter-mobile: 16px;
+  --grid-gutter-tablet: 20px;
+  --grid-gutter-desktop: 24px;
+
+  /* ==========================================================
+     Z INDEX
+  ========================================================== */
+
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal: 1100;
+  --z-toast: 1200;
+  --z-tooltip: 1300;
+
+  /* ==========================================================
+     MOTION
+  ========================================================== */
+
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
+
+  --ease-standard: cubic-bezier(.4,0,.2,1);
+  --ease-in: cubic-bezier(.4,0,1,1);
+  --ease-out: cubic-bezier(0,0,.2,1);
+
+  /* ==========================================================
+     BLUR
+  ========================================================== */
+
+  --blur-sm: 4px;
+  --blur-md: 8px;
+  --blur-lg: 16px;
+}

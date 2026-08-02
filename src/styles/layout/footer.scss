@@ -4,6 +4,7 @@
 .footer {
   border-top: 1px solid vars.$color-border;
   padding: vars.$spacing-lg vars.$spacing-md;
+  background: vars.$color-bg;
 
   @include mixins.dark-mode {
     background: vars.$color-bg-dark;
