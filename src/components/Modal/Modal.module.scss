@@ -1,0 +1,71 @@
+@use '../../styles/base/variables' as vars;
+@use '../../styles/base/mixins' as mixins;
+
+.overlay {
+  @include mixins.flex-center;
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.5);
+  padding: vars.$spacing-md;
+}
+
+.modal {
+  @include mixins.card;
+  width: 100%;
+  max-width: 28rem;
+  box-shadow: vars.$shadow-md;
+
+  @include mixins.dark-mode {
+    background: vars.$color-bg-dark;
+    border-color: vars.$color-border-dark;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: vars.$spacing-md;
+}
+
+.title {
+  font-size: vars.$font-size-lg;
+  font-weight: 600;
+  color: vars.$color-text;
+
+  @include mixins.dark-mode {
+    color: vars.$color-text-dark;
+  }
+}
+
+.closeButton {
+  @include mixins.button-reset;
+  margin-left: auto;
+  border-radius: 999px;
+  padding: vars.$spacing-xs;
+  color: vars.$color-text-muted;
+
+  &:hover {
+    background: vars.$color-border;
+    color: vars.$color-text;
+  }
+
+  @include mixins.dark-mode {
+    color: vars.$color-text-muted-dark;
+
+    &:hover {
+      background: vars.$color-border-dark;
+      color: vars.$color-text-dark;
+    }
+  }
+}
+
+.body {
+  font-size: vars.$font-size-sm;
+  color: vars.$color-text-muted;
+
+  @include mixins.dark-mode {
+    color: vars.$color-text-muted-dark;
+  }
+}

@@ -1,0 +1,45 @@
+@use '../../styles/base/variables' as vars;
+@use '../../styles/base/mixins' as mixins;
+
+.card {
+  @include mixins.button-reset;
+  @include mixins.card;
+  width: 100%;
+  max-width: 24rem;
+  text-align: left;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: vars.$shadow-md;
+  }
+
+  @include mixins.dark-mode {
+    background: vars.$color-bg-dark;
+    border-color: vars.$color-border-dark;
+  }
+}
+
+.title {
+  font-family: vars.$font-family-montserrat;
+  font-optical-sizing: auto;
+  font-size: vars.$font-size-base;
+  font-weight: 600;
+  color: vars.$color-text;
+
+  @include mixins.dark-mode {
+    color: vars.$color-text-dark;
+  }
+}
+
+.description {
+  margin-top: vars.$spacing-sm;
+  font-size: vars.$font-size-sm;
+  color: vars.$color-text-muted;
+
+  @include mixins.dark-mode {
+    color: vars.$color-text-muted-dark;
+  }
+}

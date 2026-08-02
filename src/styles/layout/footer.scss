@@ -1,0 +1,49 @@
+@use '../base/variables' as vars;
+@use '../base/mixins' as mixins;
+
+.footer {
+  border-top: 1px solid vars.$color-border;
+  padding: vars.$spacing-lg vars.$spacing-md;
+
+  @include mixins.dark-mode {
+    background: vars.$color-bg-dark;
+    border-color: vars.$color-border-dark;
+  }
+}
+
+.footer-list {
+  @include mixins.flex-center(row);
+  flex-wrap: wrap;
+  gap: vars.$spacing-md;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.footer-item a {
+  font-size: vars.$font-size-sm;
+  color: vars.$color-text-muted;
+  text-decoration: none;
+
+  &:hover {
+    color: vars.$color-text;
+  }
+
+  @include mixins.dark-mode {
+    color: vars.$color-text-muted-dark;
+
+    &:hover {
+      color: vars.$color-text-dark;
+    }
+  }
+}
+
+.footer-error {
+  padding: vars.$spacing-md;
+  text-align: center;
+  color: vars.$color-text-muted;
+
+  @include mixins.dark-mode {
+    color: vars.$color-text-muted-dark;
+  }
+}

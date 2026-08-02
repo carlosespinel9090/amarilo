@@ -1,0 +1,57 @@
+@use '../../styles/base/variables' as vars;
+@use '../../styles/base/mixins' as mixins;
+
+.container {
+  @include mixins.flex-center(column);
+  min-height: 60vh;
+  gap: vars.$spacing-sm;
+  padding: vars.$spacing-xl;
+  text-align: center;
+}
+
+.code {
+  font-family: vars.$font-family-montserrat;
+  font-size: 96px;
+  font-weight: 700;
+  line-height: 1;
+  color: vars.$color-primary;
+
+  @include mixins.dark-mode {
+    color: vars.$color-primary-light;
+  }
+}
+
+.title {
+  font-size: vars.$font-size-lg;
+  font-weight: 600;
+  color: vars.$color-text;
+
+  @include mixins.dark-mode {
+    color: vars.$color-text-dark;
+  }
+}
+
+.description {
+  font-size: vars.$font-size-sm;
+  color: vars.$color-text-muted;
+
+  @include mixins.dark-mode {
+    color: vars.$color-text-muted-dark;
+  }
+}
+
+.link {
+  margin-top: vars.$spacing-sm;
+  font-size: vars.$font-size-sm;
+  font-weight: 600;
+  color: vars.$color-primary;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  @include mixins.dark-mode {
+    color: vars.$color-primary-light;
+  }
+}

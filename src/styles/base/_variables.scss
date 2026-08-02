@@ -1,0 +1,41 @@
+// Colores
+$color-primary: #6d28d9;
+$color-primary-light: #a78bfa;
+$color-text: #1f2937;
+$color-text-muted: #6b7280;
+$color-bg: #ffffff;
+$color-border: #e5e7eb;
+
+// Colores (modo oscuro)
+$color-bg-dark: #262626;
+$color-text-dark: #f5f5f5;
+$color-text-muted-dark: #a3a3a3;
+$color-border-dark: #404040;
+
+// Tipografía
+$font-family-base: 'Montserrat', sans-serif;
+$font-family-montserrat: 'Montserrat', sans-serif;
+$font-size-base: 16px;
+$font-size-sm: 14px;
+$font-size-lg: 20px;
+
+// Espaciado
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+
+// Bordes
+$radius-sm: 6px;
+$radius-md: 10px;
+$radius-lg: 16px;
+
+// Sombras
+$shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+
+// Breakpoints
+$breakpoint-sm: 640px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;

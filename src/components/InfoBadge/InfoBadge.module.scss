@@ -1,0 +1,47 @@
+@use '../../styles/base/variables' as vars;
+@use '../../styles/base/mixins' as mixins;
+
+.badge {
+  @include mixins.card;
+  @include mixins.flex-center;
+  gap: vars.$spacing-sm;
+  width: fit-content;
+  font-family: vars.$font-family-base;
+  font-size: vars.$font-size-sm;
+  color: vars.$color-text;
+
+  @include mixins.respond-to(md) {
+    font-size: vars.$font-size-base;
+    padding: vars.$spacing-lg;
+  }
+
+  @include mixins.dark-mode {
+    background: vars.$color-bg-dark;
+    border-color: vars.$color-border-dark;
+    color: vars.$color-text-dark;
+  }
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: vars.$color-primary;
+}
+
+.title {
+  font-weight: 600;
+  color: vars.$color-text;
+
+  @include mixins.dark-mode {
+    color: vars.$color-text-dark;
+  }
+}
+
+.subtitle {
+  color: vars.$color-text-muted;
+
+  @include mixins.dark-mode {
+    color: vars.$color-text-muted-dark;
+  }
+}
