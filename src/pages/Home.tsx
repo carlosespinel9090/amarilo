@@ -1,5 +1,6 @@
 import { Card } from '../components/Card'
 import { InfoBadge } from '../components/InfoBadge'
+import { ProjectSteps } from '../components/ProjectSteps'
 import { WhyAmarilo } from '../components/WhyAmarilo'
 
 export function Home() {
@@ -27,6 +28,7 @@ export function Home() {
         </div>
       </div>
 
+      <ProjectSteps />
       <WhyAmarilo />
     </>
   )

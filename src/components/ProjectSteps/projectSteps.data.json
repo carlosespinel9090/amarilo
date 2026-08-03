@@ -1,0 +1,22 @@
+{
+  "badge": "¿No sabes por dónde empezar?",
+  "title": "Tu proyecto ideal en 3 pasos",
+  "description": "Cuéntanos tu presupuesto y preferencias y nuestro asistente te recomienda los mejores proyectos para ti, sin formularios extensos.",
+  "steps": [
+    "Perfil y ubicación en segundos.",
+    "Top 3 proyectos con % de match ideal.",
+    "Guarda tus proyectos favoritos y recibe novedades."
+  ],
+  "primaryButton": {
+    "text": "Iniciar",
+    "href": "/perfil"
+  },
+  "secondaryButton": {
+    "text": "Simular mi cuota",
+    "href": "/simulador"
+  },
+  "image": {
+    "src": "/images/proyecto-ideal.jpg",
+    "alt": "Asesora comercial mostrando un proyecto inmobiliario a un cliente en una tablet"
+  }
+}

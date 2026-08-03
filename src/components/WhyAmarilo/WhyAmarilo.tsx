@@ -108,10 +108,10 @@ export function WhyAmarilo() {
             return (
               <div
                 key={item.title}
-                className="rounded-xl bg-white p-md-2 laptop:p-lg text-ink shadow-card"
+                className="group rounded-xl bg-white p-md-2 laptop:p-lg text-ink shadow-card transition-all duration-300 hover:scale-[0.99] hover:bg-yellow"
               >
-                <div className="flex h-13 w-13 items-center justify-center rounded-md bg-yellow">
-                  <Icon className="h-6 w-6 text-ink" />
+                <div className="flex h-13 w-13 items-center justify-center rounded-md bg-yellow transition-colors duration-300 group-hover:bg-black">
+                  <Icon className="h-6 w-6 text-ink transition-colors duration-300 group-hover:text-white" />
                 </div>
 
                 <h3 className="mt-md text-h4 font-semibold font-sans text-[1.188rem]">{item.title}</h3>
