@@ -83,6 +83,9 @@
   --text-h6--font-weight: 700;
   --text-h6--letter-spacing: .08em;
 
+  --text-small: 0.75rem; /*12px*/
+  --text-small--line-height: 0.875rem; /*14px*/
+
   /* Body */
 
   --text-body-lg: 1.125rem; /*18*/
@@ -97,7 +100,9 @@
   --text-body-sm--line-height: 1.25rem; /*20*/
   --text-body-sm--font-weight: 400;
 
-  /* Label */
+  --text-body-primary: 1.125rem; /*18*/
+  --text-body-primary--line-height: 1.8rem; /*28.8*/
+  --text-body-primary--font-weight: 400;
 
   --text-label: .8125rem; /*13*/
   --text-label--line-height: 1rem;
@@ -117,6 +122,7 @@
   --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 16px;
+  --spacing-md-2: 20px;
   --spacing-lg: 24px;
   --spacing-xl: 32px;
   --spacing-2xl: 48px;
@@ -125,7 +131,7 @@
   /* ==========================================================
      BORDER RADIUS
   ========================================================== */
-
+  --radius-xs: 4px;
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
@@ -182,15 +188,16 @@
   --container-3xl: 48rem;
   --container-4xl: 56rem;
   --container-5xl: 64rem;
-  --container-6xl: 72rem;
+  --container-6xl: 71rem;
   --container-7xl: 75rem;
 
   /* ==========================================================
      BREAKPOINTS
   ========================================================== */
 
-  --breakpoint-tablet: 48rem;
-  --breakpoint-desktop: 64rem;
+  --breakpoint-tablet: 48rem;   /* 768px */
+  --breakpoint-laptop: 62rem;   /* 992px */
+  --breakpoint-desktop: 64rem;  /* 1024px */
 
   /* ==========================================================
      GRID
@@ -234,4 +241,13 @@
   --blur-sm: 4px;
   --blur-md: 8px;
   --blur-lg: 16px;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: var(--text-body--line-height);
+  font-weight: var(--text-body--font-weight);
+  color: var(--color-ink);
+  background-color: var(--color-white);
 }

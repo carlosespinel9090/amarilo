@@ -92,13 +92,13 @@ export function WhyAmarilo() {
   return (
     <section className="bg-ink px-md py-2xl text-white">
       <div className="mx-auto max-w-6xl">
-        <span className="inline-block rounded-pill bg-yellow px-md py-xs text-label font-bold uppercase tracking-wide text-ink">
+        <span className="inline-block rounded-xs bg-yellow px-md py-sm text-label font-semibold font-sans text-small uppercase tracking-wide text-ink">
           {whyAmariloData.badge}
         </span>
 
-        <h2 className="mt-md text-h2 font-bold">{whyAmariloData.title}</h2>
-        <p className="mt-sm max-w-(--container-md) text-body text-n-300">
-          {whyAmariloData.description}
+        <h2 className="mt-md text-h1 text-white text-[1.5rem] laptop:text-[2.25rem] font-semibold font-sans">{whyAmariloData.title}</h2>
+        <p className="mt-md max-w-(--container-xl) text-[1rem] text-white laptop:text-body-primary">
+          {whyAmariloData.description}  
         </p>
 
         <div className="mt-xl grid grid-cols-1 gap-lg md:grid-cols-3">
@@ -108,20 +108,20 @@ export function WhyAmarilo() {
             return (
               <div
                 key={item.title}
-                className="rounded-xl bg-white p-lg text-ink shadow-card"
+                className="rounded-xl bg-white p-md-2 laptop:p-lg text-ink shadow-card"
               >
-                <div className="flex h-12 w-12 items-center justify-center rounded-md bg-yellow">
+                <div className="flex h-13 w-13 items-center justify-center rounded-md bg-yellow">
                   <Icon className="h-6 w-6 text-ink" />
                 </div>
 
-                <h3 className="mt-md text-h4 font-semibold font-sans">{item.title}</h3>
-                <p className="mt-xs text-body-sm text-n-500">
+                <h3 className="mt-md text-h4 font-semibold font-sans text-[1.188rem]">{item.title}</h3>
+                <p className="mt-sm text-body-sm leading-[22.4px] text-n-500">
                   {item.description}
                 </p>
 
                 <a
                   href={item.linkHref}
-                  className="mt-md inline-flex items-center gap-xs text-label font-bold text-ink hover:underline"
+                  className="tracking-normal mt-md text-body-sm inline-flex items-center gap-xs text-label font-bold text-ink hover:underline"
                 >
                   {item.linkText} →
                 </a>
