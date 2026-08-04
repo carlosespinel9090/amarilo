@@ -1,37 +1,38 @@
-import { Link, Route, Routes } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import { Home } from './pages/Home'
 import { About } from './pages/About'
 import { NotFound } from './pages/NotFound'
+import { UtilityBar } from './components/UtilityBar'
+import { Header } from './components/Header'
 import { Footer } from './components/Footer'
+import { useLayout } from './hooks/useLayout'
 import { useTrackPageView } from './analytics'
 
 function App() {
   useTrackPageView()
+  const { layout, error } = useLayout()
 
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
-      <nav className="flex gap-4 border-b border-neutral-200 p-4 dark:border-neutral-700">
-        <Link
-          to="/"
-          className="text-sm font-medium text-neutral-700 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-neutral-100"
-        >
-          Inicio
-        </Link>
-        <Link
-          to="/about"
-          className="text-sm font-medium text-neutral-700 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-neutral-100"
-        >
-          Acerca de
-        </Link>
-      </nav>
+    <div className="min-h-screen bg-white text-[#161616]">
+      {layout ? <UtilityBar links={layout.utility} /> : null}
+      {layout ? (
+        <Header
+          logoAlt={layout.header.logo_alt}
+          logoUrl={layout.header.logo_url}
+          menu={layout.header.menu}
+          cta={layout.header.cta}
+        />
+      ) : null}
 
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <main>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </main>
 
-      <Footer />
+      <Footer data={layout?.footer ?? null} error={error} />
     </div>
   )
 }

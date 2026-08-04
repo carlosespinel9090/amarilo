@@ -1,72 +1,79 @@
-import { useEffect, useState } from 'react'
-import { fetchFooter } from '../../utils/fetchFooter'
+import type { LayoutSocial, SiteLayout } from '../../types/layout'
 import '../../styles/layout/footer.scss'
 
-interface FooterItem {
-  title: string
-  url: string
+interface FooterProps {
+  data: SiteLayout['footer'] | null
+  error?: string | null
 }
 
-function toFooterItems(data: unknown): FooterItem[] {
-  const menu = (data as { footer?: { menu?: unknown[] } })?.footer?.menu
-
-  if (!Array.isArray(menu)) return []
-
-  return menu.map((item) => {
-    const entry = item as {
-      texto_enlace?: string
-      enlace?: string | { url?: string }
-    }
-
-    return {
-      title: entry.texto_enlace ?? 'Sin título',
-      url:
-        typeof entry.enlace === 'string'
-          ? entry.enlace
-          : (entry.enlace?.url ?? '#'),
-    }
-  })
+function socialLabel(network: string) {
+  return network.slice(0, 2).toUpperCase()
 }
 
-export function Footer() {
-  const [items, setItems] = useState<FooterItem[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+function SocialIcon({ item }: { item: LayoutSocial }) {
+  return (
+    <a
+      className="site-footer__social-link"
+      href={item.url}
+      target="_blank"
+      rel="noreferrer"
+      aria-label={item.network}
+    >
+      {socialLabel(item.network)}
+    </a>
+  )
+}
 
-  useEffect(() => {
-    let isMounted = true
-
-    fetchFooter()
-      .then((data) => {
-        if (isMounted) setItems(toFooterItems(data))
-      })
-      .catch(() => {
-        if (isMounted) setError('No se pudieron cargar los datos del footer')
-      })
-      .finally(() => {
-        if (isMounted) setLoading(false)
-      })
-
-    return () => {
-      isMounted = false
-    }
-  }, [])
-
-  if (loading) return null
-
-  if (error) {
-    return <div className="footer-error">{error}</div>
+export function Footer({ data, error }: FooterProps) {
+  if (error && !data) {
+    return <div className="site-footer__error">{error}</div>
   }
 
+  if (!data) return null
+
   return (
-    <footer className="footer">
-      <ul className="footer-list">
-        {items.map((item) => (
-          <li key={item.url} className="footer-item">
-            <a href={item.url}>{item.title}</a>
-          </li>
-        ))}
-      </ul>
+    <footer className="site-footer">
+      <div className="site-footer__inner">
+        <div className="site-footer__grid">
+          <div>
+            <p className="site-footer__brand-title">{data.brand.title}</p>
+            <p className="site-footer__tagline">{data.brand.tagline}</p>
+            {data.brand.social.length > 0 ? (
+              <ul className="site-footer__social">
+                {data.brand.social.map((item) => (
+                  <li key={item.network}>
+                    <SocialIcon item={item} />
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
+
+          {data.columns.map((column) => (
+            <div key={column.title}>
+              <h6 className="site-footer__column-title">{column.title}</h6>
+              <ul className="site-footer__column-list">
+                {column.links.map((link) => (
+                  <li key={`${column.title}-${link.title}`}>
+                    <a href={link.url}>{link.title}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        <div className="site-footer__bottom">
+          <p className="site-footer__copyright">{data.copyright}</p>
+          <ul className="site-footer__legal">
+            {data.legal.map((link) => (
+              <li key={`${link.title}-${link.url}`}>
+                <a href={link.url}>{link.title}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
     </footer>
   )
 }

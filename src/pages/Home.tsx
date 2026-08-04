@@ -1,35 +1,41 @@
-import { Card } from '../components/Card'
-import { InfoBadge } from '../components/InfoBadge'
-import { ProjectSteps } from '../components/ProjectSteps'
-import { WhyAmarilo } from '../components/WhyAmarilo'
+import { useEffect, useState } from 'react'
+import { fetchHome } from '../utils/fetchHome'
+import type { HomePayload } from '../types/home'
+import { HomeSections } from '../components/home/HomeSections'
 
 export function Home() {
-  return (
-    <>
-      <div className="mx-auto flex max-w-3xl flex-col gap-6 p-8">
-        <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
-          Inicio
-        </h1>
+  const [home, setHome] = useState<HomePayload | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
-        <InfoBadge
-          title="Componente en SCSS"
-          subtitle="Usa variables y mixins de src/styles"
-        />
+  useEffect(() => {
+    let mounted = true
+    fetchHome()
+      .then((data) => {
+        if (mounted) setHome(data)
+      })
+      .catch(() => {
+        if (mounted) setError('No se pudo cargar el home')
+      })
+    return () => {
+      mounted = false
+    }
+  }, [])
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <Card
-            title="Componente Card"
-            description="Haz click en esta tarjeta para abrir la modal."
-          />
-          <Card
-            title="Otro ejemplo"
-            description="Cada Card maneja su propio estado de modal."
-          />
-        </div>
+  if (error) {
+    return (
+      <div className="home-container" style={{ padding: '48px 32px' }}>
+        <p>{error}</p>
       </div>
+    )
+  }
 
-      <ProjectSteps />
-      <WhyAmarilo />
-    </>
-  )
+  if (!home) {
+    return (
+      <div className="home-container" style={{ padding: '48px 32px' }}>
+        <p>Cargando…</p>
+      </div>
+    )
+  }
+
+  return <HomeSections sections={home.sections} filters={home.filters} />
 }

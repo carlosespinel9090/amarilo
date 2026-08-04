@@ -1,0 +1,30 @@
+@use '../base/variables' as vars;
+
+.utility-bar {
+  background: vars.$color-brand-black;
+  color: #fff;
+  font-family: vars.$font-family-montserrat;
+}
+
+.utility-bar__inner {
+  max-width: vars.$layout-max;
+  margin: 0 auto;
+  padding: 8px vars.$layout-gutter;
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.utility-bar__link {
+  color: #fff;
+  text-decoration: none;
+  font-size: 12.5px;
+  line-height: 21px;
+  opacity: 0.92;
+
+  &:hover {
+    opacity: 1;
+    text-decoration: underline;
+  }
+}
