@@ -1,0 +1,1 @@
+export { ProyectoDetail } from './ProyectoDetail'

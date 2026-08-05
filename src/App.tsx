@@ -2,6 +2,8 @@ import { useEffect, type ReactNode } from 'react'
 import { Outlet, Route, Routes } from 'react-router-dom'
 import { Home } from './pages/Home'
 import { About } from './pages/About'
+import { ProyectoDetail } from './pages/ProyectoDetail'
+import { ProyectosList } from './pages/ProyectosList'
 import { NotFound } from './pages/NotFound'
 import { UtilityBar } from './components/UtilityBar'
 import { Header } from './components/Header'
@@ -71,6 +73,14 @@ function App() {
           {PAGE_ROUTES.map(({ key, element }) => (
             <Route key={key} path={ROUTE_SLUGS[key][locale]} element={element} />
           ))}
+          <Route
+            path={ROUTE_SLUGS.proyectos[locale]}
+            element={<ProyectosList />}
+          />
+          <Route
+            path={`${ROUTE_SLUGS.proyectos[locale]}/:slug`}
+            element={<ProyectoDetail />}
+          />
           <Route path="*" element={<NotFound />} />
         </Route>
       ))}

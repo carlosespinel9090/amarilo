@@ -2,6 +2,9 @@ import { Link, useNavigate } from 'react-router-dom'
 import type { FilterOption, HomeLink, HomePayload, HomeSection, ProyectoCard } from '../../types/home'
 import { useLocale } from '../../i18n/LocaleContext'
 import { localizedPath } from '../../i18n/config'
+import { pathFor } from '../../i18n/paths'
+import { proyectoImageUrl } from '../../utils/proyectoImage'
+import { buildProyectoQuery, parseProyectoFilters } from '../../utils/proyectoFilters'
 import '../../styles/layout/home.scss'
 
 function formatPrice(value: string | number | null) {
@@ -37,17 +40,21 @@ function Cta({ link, className }: { link: HomeLink | null; className?: string })
 
 function SelectField({
   label,
+  name,
   options,
   defaultLabel,
+  value,
 }: {
   label: string
+  name: string
   options: FilterOption[]
   defaultLabel: string
+  value?: string
 }) {
   return (
     <div className="home-search__field">
-      <label>{label}</label>
-      <select defaultValue="">
+      <label htmlFor={`filter-${name}`}>{label}</label>
+      <select id={`filter-${name}`} name={name} defaultValue={value ?? ''}>
         <option value="">{defaultLabel}</option>
         {options.map((opt) => (
           <option key={String(opt.id)} value={String(opt.id)}>
@@ -80,9 +87,11 @@ function ProjectCardView({
   item: ProyectoCard
   compact?: boolean
 }) {
+  const locale = useLocale()
   const premium = item.variant === 'premium'
   const hab = formatHab(item.hab_min, item.hab_max)
   const badges = [...(item.estado ? [item.estado] : []), ...item.segmentos].slice(0, 3)
+  const image = proyectoImageUrl(item.image_url)
 
   return (
     <article
@@ -90,11 +99,7 @@ function ProjectCardView({
     >
       <div
         className="project-card__media"
-        style={
-          item.image_url
-            ? { backgroundImage: `url(${item.image_url})`, backgroundSize: 'cover' }
-            : undefined
-        }
+        style={{ backgroundImage: `url(${image})`, backgroundSize: 'cover' }}
       >
         <div className="project-card__badges">
           {badges.map((b) => (
@@ -120,9 +125,12 @@ function ProjectCardView({
           </ul>
         ) : null}
         <div className="project-card__actions">
-          <a className={`home-btn${premium || compact ? '' : ' home-btn--dark'}`} href={item.url}>
+          <Link
+            className={`home-btn${premium || compact ? '' : ' home-btn--dark'}`}
+            to={localizedPath(item.url || '/', locale)}
+          >
             Ver proyecto
-          </a>
+          </Link>
           {!compact ? (
             <button type="button" className="home-btn home-btn--outline">
               Comparar
@@ -165,22 +173,35 @@ function SectionHero({
           className="home-search"
           onSubmit={(e) => {
             e.preventDefault()
-            const target = data.search_cta?.url || '/proyectos'
-            if (target.startsWith('http')) {
-              window.location.href = target
+            const form = e.currentTarget
+            const filters = parseProyectoFilters(new FormData(form))
+            const base = data.search_cta?.url || '/proyectos'
+            if (base.startsWith('http')) {
+              const url = new URL(base)
+              Object.entries(filters).forEach(([k, v]) => {
+                if (v) url.searchParams.set(k, v)
+              })
+              window.location.href = url.toString()
               return
             }
-            navigate(localizedPath(target, locale))
+            // Always land on list route with query (ignore CMS path extras).
+            navigate(`${pathFor('proyectos', locale)}${buildProyectoQuery(filters)}`)
           }}
         >
-          <SelectField label="Ciudad" options={filters.ciudades} defaultLabel="Bogotá" />
-          <SelectField label="Tipo" options={filters.tipos} defaultLabel="Apartamento" />
+          <SelectField
+            label="Ciudad"
+            name="ciudad"
+            options={filters.ciudades}
+            defaultLabel="Todas"
+          />
+          <SelectField label="Tipo" name="tipo" options={filters.tipos} defaultLabel="Todos" />
           <SelectField
             label="Presupuesto"
+            name="presupuesto"
             options={filters.presupuestos}
-            defaultLabel="$250M - $450M"
+            defaultLabel="Todos"
           />
-          <SelectField label="Etapa" options={filters.etapas} defaultLabel="Todas" />
+          <SelectField label="Etapa" name="etapa" options={filters.etapas} defaultLabel="Todas" />
           <button type="submit" className="home-search__submit" aria-label="Buscar" />
         </form>
       </div>
