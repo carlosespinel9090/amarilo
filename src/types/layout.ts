@@ -14,6 +14,8 @@ export interface LayoutColumn {
 }
 
 export interface SiteLayout {
+  lang?: string
+  available_languages?: string[]
   utility: LayoutLink[]
   header: {
     logo_alt: string

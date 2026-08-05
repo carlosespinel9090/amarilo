@@ -1,23 +1,27 @@
 import { Link } from 'react-router-dom'
 import type { LayoutLink } from '../../types/layout'
+import { useLocale } from '../../i18n/LocaleContext'
+import { localizedPath } from '../../i18n/config'
+import { LanguageSwitcher } from '../LanguageSwitcher'
 import '../../styles/layout/utility-bar.scss'
 
 interface UtilityBarProps {
   links: LayoutLink[]
 }
 
-function toTo(url: string) {
-  return url.startsWith('http') ? url : url || '/'
+function toTo(url: string, locale: ReturnType<typeof useLocale>) {
+  if (url.startsWith('http')) return url
+  return localizedPath(url || '/', locale)
 }
 
 export function UtilityBar({ links }: UtilityBarProps) {
-  if (!links.length) return null
+  const locale = useLocale()
 
   return (
-    <div className="utility-bar">
+    <div className="utility-bar" style={{ flex: 1 }}>
       <div className="utility-bar__inner">
         {links.map((link) => {
-          const href = toTo(link.url)
+          const href = toTo(link.url, locale)
           if (href.startsWith('http')) {
             return (
               <a
@@ -41,6 +45,7 @@ export function UtilityBar({ links }: UtilityBarProps) {
             </Link>
           )
         })}
+        <LanguageSwitcher />
       </div>
     </div>
   )

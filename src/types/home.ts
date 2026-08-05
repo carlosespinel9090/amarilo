@@ -139,6 +139,8 @@ export type HomeSection =
     }
 
 export interface HomePayload {
+  lang?: string
+  available_languages?: string[]
   sections: HomeSection[]
   filters: {
     ciudades: FilterOption[]

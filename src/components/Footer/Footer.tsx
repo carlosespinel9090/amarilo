@@ -1,4 +1,7 @@
 import type { LayoutSocial, SiteLayout } from '../../types/layout'
+import { Link } from 'react-router-dom'
+import { useLocale } from '../../i18n/LocaleContext'
+import { localizedPath } from '../../i18n/config'
 import '../../styles/layout/footer.scss'
 
 interface FooterProps {
@@ -22,6 +25,14 @@ function SocialIcon({ item }: { item: LayoutSocial }) {
       {socialLabel(item.network)}
     </a>
   )
+}
+
+function FooterLink({ url, title }: { url: string; title: string }) {
+  const locale = useLocale()
+  if (url.startsWith('http') || url.startsWith('mailto:') || url.startsWith('tel:')) {
+    return <a href={url}>{title}</a>
+  }
+  return <Link to={localizedPath(url || '/', locale)}>{title}</Link>
 }
 
 export function Footer({ data, error }: FooterProps) {
@@ -55,7 +66,7 @@ export function Footer({ data, error }: FooterProps) {
               <ul className="site-footer__column-list">
                 {column.links.map((link) => (
                   <li key={`${column.title}-${link.title}`}>
-                    <a href={link.url}>{link.title}</a>
+                    <FooterLink url={link.url} title={link.title} />
                   </li>
                 ))}
               </ul>
@@ -68,7 +79,7 @@ export function Footer({ data, error }: FooterProps) {
           <ul className="site-footer__legal">
             {data.legal.map((link) => (
               <li key={`${link.title}-${link.url}`}>
-                <a href={link.url}>{link.title}</a>
+                <FooterLink url={link.url} title={link.title} />
               </li>
             ))}
           </ul>

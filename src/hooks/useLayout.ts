@@ -1,44 +1,50 @@
 import { useEffect, useState } from 'react'
-import { fetchLayout } from '../utils/fetchLayout'
+import { fetchLayout, clearLayoutCache } from '../utils/fetchLayout'
 import type { SiteLayout } from '../types/layout'
+import type { Locale } from '../i18n/config'
+import { t } from '../i18n/ui'
 
-let cachedLayout: SiteLayout | null = null
-let pending: Promise<SiteLayout> | null = null
+const cacheByLang = new Map<Locale, SiteLayout>()
+const pendingByLang = new Map<Locale, Promise<SiteLayout>>()
 
-export function useLayout() {
-  const [layout, setLayout] = useState<SiteLayout | null>(cachedLayout)
-  const [loading, setLoading] = useState(!cachedLayout)
+export function useLayout(locale: Locale) {
+  const [layout, setLayout] = useState<SiteLayout | null>(cacheByLang.get(locale) ?? null)
+  const [loading, setLoading] = useState(!cacheByLang.has(locale))
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     let mounted = true
-
-    if (cachedLayout) {
-      setLayout(cachedLayout)
+    const cached = cacheByLang.get(locale)
+    if (cached) {
+      setLayout(cached)
       setLoading(false)
+      setError(null)
       return
     }
 
-    const request =
-      pending ??
-      (pending = fetchLayout()
-        .then((data: SiteLayout) => {
-          cachedLayout = data
+    setLoading(true)
+    let request = pendingByLang.get(locale)
+    if (!request) {
+      request = fetchLayout(locale)
+        .then((data) => {
+          cacheByLang.set(locale, data)
           return data
         })
         .finally(() => {
-          pending = null
-        }))
+          pendingByLang.delete(locale)
+        })
+      pendingByLang.set(locale, request)
+    }
 
     request
-      .then((data: SiteLayout) => {
+      .then((data) => {
         if (mounted) {
           setLayout(data)
           setError(null)
         }
       })
       .catch(() => {
-        if (mounted) setError('No se pudo cargar el layout')
+        if (mounted) setError(t(locale, 'layoutError'))
       })
       .finally(() => {
         if (mounted) setLoading(false)
@@ -47,7 +53,17 @@ export function useLayout() {
     return () => {
       mounted = false
     }
-  }, [])
+  }, [locale])
 
   return { layout, loading, error }
+}
+
+export function invalidateLayoutCache(locale?: Locale) {
+  if (locale) {
+    cacheByLang.delete(locale)
+    clearLayoutCache()
+    return
+  }
+  cacheByLang.clear()
+  clearLayoutCache()
 }

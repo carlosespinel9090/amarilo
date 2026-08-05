@@ -1,5 +1,7 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import type { FilterOption, HomeLink, HomePayload, HomeSection, ProyectoCard } from '../../types/home'
+import { useLocale } from '../../i18n/LocaleContext'
+import { localizedPath } from '../../i18n/config'
 import '../../styles/layout/home.scss'
 
 function formatPrice(value: string | number | null) {
@@ -16,6 +18,7 @@ function formatHab(min: number | null, max: number | null) {
 }
 
 function Cta({ link, className }: { link: HomeLink | null; className?: string }) {
+  const locale = useLocale()
   if (!link) return null
   const external = link.url.startsWith('http')
   if (external) {
@@ -26,7 +29,7 @@ function Cta({ link, className }: { link: HomeLink | null; className?: string })
     )
   }
   return (
-    <Link className={className} to={link.url || '/'}>
+    <Link className={className} to={localizedPath(link.url || '/', locale)}>
       {link.title}
     </Link>
   )
@@ -138,6 +141,8 @@ function SectionHero({
   data: Extract<HomeSection, { type: 'hero' }>['data']
   filters: HomePayload['filters']
 }) {
+  const locale = useLocale()
+  const navigate = useNavigate()
   return (
     <section className="home-section home-hero">
       <div className="home-hero__bg">
@@ -160,7 +165,12 @@ function SectionHero({
           className="home-search"
           onSubmit={(e) => {
             e.preventDefault()
-            window.location.href = data.search_cta?.url || '/proyectos'
+            const target = data.search_cta?.url || '/proyectos'
+            if (target.startsWith('http')) {
+              window.location.href = target
+              return
+            }
+            navigate(localizedPath(target, locale))
           }}
         >
           <SelectField label="Ciudad" options={filters.ciudades} defaultLabel="Bogotá" />
@@ -212,6 +222,7 @@ function SectionRenderer({
   section: HomeSection
   filters: HomePayload['filters']
 }) {
+  const locale = useLocale()
   switch (section.type) {
     case 'hero':
       return <SectionHero data={section.data} filters={filters} />
@@ -346,26 +357,29 @@ function SectionRenderer({
             <h2 className="home-title">{section.data.title}</h2>
             {section.data.text ? <p className="home-text">{section.data.text}</p> : null}
             <div className="home-explore__grid">
-              {section.data.routes.map((route) => (
-                <a
-                  key={route.title}
-                  className="home-explore__card"
-                  href={route.link?.url || '#'}
-                  style={
-                    route.image_url
-                      ? {
-                          backgroundImage: `linear-gradient(180deg, rgba(22,22,22,0.05) 30%, rgba(22,22,22,0.78) 100%), url(${route.image_url})`,
-                        }
-                      : undefined
-                  }
-                >
-                  <div className="home-explore__body">
-                    <h3>{route.title}</h3>
-                    <p>{route.text}</p>
-                    <span className="home-explore__cta">{route.link?.title || 'Explorar'} →</span>
-                  </div>
-                </a>
-              ))}
+              {section.data.routes.map((route) => {
+                const to = localizedPath(route.link?.url || '/', locale)
+                return (
+                  <Link
+                    key={route.title}
+                    className="home-explore__card"
+                    to={to}
+                    style={
+                      route.image_url
+                        ? {
+                            backgroundImage: `linear-gradient(180deg, rgba(22,22,22,0.05) 30%, rgba(22,22,22,0.78) 100%), url(${route.image_url})`,
+                          }
+                        : undefined
+                    }
+                  >
+                    <div className="home-explore__body">
+                      <h3>{route.title}</h3>
+                      <p>{route.text}</p>
+                      <span className="home-explore__cta">{route.link?.title || 'Explorar'} →</span>
+                    </div>
+                  </Link>
+                )
+              })}
             </div>
           </div>
         </section>

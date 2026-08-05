@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import type { LayoutLink } from '../../types/layout'
+import { useLocale } from '../../i18n/LocaleContext'
+import { localizedPath, stripLocalePrefix } from '../../i18n/config'
 import '../../styles/layout/header.scss'
 
 interface HeaderProps {
@@ -16,7 +18,7 @@ function normalizePath(url: string) {
 }
 
 function isActive(pathname: string, url: string) {
-  const current = normalizePath(pathname)
+  const current = normalizePath(stripLocalePrefix(pathname))
   const target = normalizePath(url)
   if (target === '/') return current === '/'
   return current === target || current.startsWith(`${target}/`)
@@ -24,12 +26,14 @@ function isActive(pathname: string, url: string) {
 
 export function Header({ logoAlt, logoUrl, menu, cta }: HeaderProps) {
   const { pathname } = useLocation()
+  const locale = useLocale()
   const [open, setOpen] = useState(false)
+  const homeTo = localizedPath('/', locale)
 
   return (
     <header className="site-header">
       <div className="site-header__inner">
-        <Link to="/" className="site-header__logo" aria-label={logoAlt}>
+        <Link to={homeTo} className="site-header__logo" aria-label={logoAlt}>
           {logoUrl ? (
             <img className="site-header__logo-img" src={logoUrl} alt={logoAlt} />
           ) : (
@@ -57,11 +61,12 @@ export function Header({ logoAlt, logoUrl, menu, cta }: HeaderProps) {
           aria-label="Principal"
         >
           {menu.map((item) => {
-            const active = isActive(pathname, item.url)
+            const to = localizedPath(item.url || '/', locale)
+            const active = isActive(pathname, item.url || '/')
             return (
               <Link
                 key={`${item.title}-${item.url}`}
-                to={item.url || '/'}
+                to={to}
                 className={`site-header__link${active ? ' is-active' : ''}`}
                 onClick={() => setOpen(false)}
               >
@@ -72,7 +77,7 @@ export function Header({ logoAlt, logoUrl, menu, cta }: HeaderProps) {
           })}
         </nav>
 
-        <Link className="site-header__cta" to={cta.url || '/contacto'}>
+        <Link className="site-header__cta" to={localizedPath(cta.url || '/contacto', locale)}>
           {cta.title}
         </Link>
       </div>
