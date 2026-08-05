@@ -12,7 +12,11 @@ export const apiClient = axios.create({
 })
 
 apiClient.interceptors.request.use((config) => {
-  const token = store.getState().auth.token ?? import.meta.env.VITE_JWT_TOKEN
+  const rawToken = store.getState().auth.token ?? import.meta.env.VITE_JWT_TOKEN
+  const token =
+    rawToken && !['', 'none', '-', 'null', 'undefined'].includes(String(rawToken).trim())
+      ? String(rawToken).trim()
+      : null
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
