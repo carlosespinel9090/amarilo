@@ -41,7 +41,7 @@ function Shell({ locale }: { locale: Locale }) {
     <LocaleContext.Provider value={locale}>
       <div className="min-h-screen bg-white text-[#161616]">
         <UtilityBar links={layout?.utility ?? []} />
-        {layout ? (
+        {layout?.header ? (
           <Header
             logoAlt={layout.header.logo_alt}
             logoUrl={layout.header.logo_url}
