@@ -15,6 +15,8 @@ import { type Locale, DEFAULT_LOCALE, LOCALES } from './i18n/config'
 import { ROUTE_SLUGS, type RouteKey } from './i18n/paths'
 import { setApiLang } from './i18n/apiLang'
 import { t } from './i18n/ui'
+import { CurrencyProvider } from './currency/CurrencyContext'
+import { AlternateUrlsProvider } from './i18n/AlternateUrlsContext'
 
 /** Páginas con componente real, registradas bajo el slug de cada locale. */
 const PAGE_ROUTES: Array<{ key: RouteKey; element: ReactNode }> = [
@@ -41,23 +43,27 @@ function Shell({ locale }: { locale: Locale }) {
 
   return (
     <LocaleContext.Provider value={locale}>
-      <div className="min-h-screen bg-white text-[#161616]">
-        <UtilityBar links={layout?.utility ?? []} />
-        {layout?.header ? (
-          <Header
-            logoAlt={layout.header.logo_alt}
-            logoUrl={layout.header.logo_url}
-            menu={layout.header.menu}
-            cta={layout.header.cta}
-          />
-        ) : null}
+      <CurrencyProvider>
+        <AlternateUrlsProvider>
+          <div className="min-h-screen bg-white text-[#161616]">
+            <UtilityBar links={layout?.utility ?? []} />
+            {layout?.header ? (
+              <Header
+                logoAlt={layout.header.logo_alt}
+                logoUrl={layout.header.logo_url}
+                menu={layout.header.menu}
+                cta={layout.header.cta}
+              />
+            ) : null}
 
-        <main>
-          <Outlet />
-        </main>
+            <main>
+              <Outlet />
+            </main>
 
-        <Footer data={layout?.footer ?? null} error={error ? t(locale, 'layoutError') : null} />
-      </div>
+            <Footer data={layout?.footer ?? null} error={error ? t(locale, 'layoutError') : null} />
+          </div>
+        </AlternateUrlsProvider>
+      </CurrencyProvider>
     </LocaleContext.Provider>
   )
 }

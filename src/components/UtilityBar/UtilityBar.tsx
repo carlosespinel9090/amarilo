@@ -3,6 +3,7 @@ import type { LayoutLink } from '../../types/layout'
 import { useLocale } from '../../i18n/LocaleContext'
 import { localizedPath } from '../../i18n/config'
 import { LanguageSwitcher } from '../LanguageSwitcher'
+import { CurrencyToggle } from '../CurrencyToggle'
 import '../../styles/layout/utility-bar.scss'
 
 interface UtilityBarProps {
@@ -45,6 +46,7 @@ export function UtilityBar({ links }: UtilityBarProps) {
             </Link>
           )
         })}
+        <CurrencyToggle />
         <LanguageSwitcher />
       </div>
     </div>

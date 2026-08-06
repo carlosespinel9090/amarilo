@@ -1,5 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useLocale } from '../../i18n/LocaleContext'
+import { useAlternateUrls } from '../../i18n/AlternateUrlsContext'
 import {
   LOCALES,
   type Locale,
@@ -19,15 +20,22 @@ export function LanguageSwitcher() {
   const locale = useLocale()
   const navigate = useNavigate()
   const location = useLocation()
+  const { urls: alternateUrls } = useAlternateUrls()
+
+  function pathForLocale(next: Locale): string {
+    // Detail pages expose per-language CMS aliases (Pathauto).
+    const alt = alternateUrls?.[next]
+    if (alt) {
+      return localizedPath(alt, next) + location.search
+    }
+    const canonical = stripLocalePrefix(location.pathname)
+    return localizedPath(canonical, next) + location.search
+  }
 
   function switchTo(next: Locale) {
     if (next === locale) return
-    // stripLocalePrefix → canónico ES; localizedPath → slugs del destino.
-    const canonical = stripLocalePrefix(location.pathname)
-    navigate(localizedPath(canonical, next) + location.search)
+    navigate(pathForLocale(next))
   }
-
-  const canonical = stripLocalePrefix(location.pathname)
 
   return (
     <div className="lang-switcher" aria-label={t(locale, 'language')}>
@@ -49,7 +57,7 @@ export function LanguageSwitcher() {
       {/* fallback for crawlers */}
       <span className="lang-switcher__sr">
         {LOCALES.map((code) => (
-          <Link key={code} to={localizedPath(canonical, code)}>
+          <Link key={code} to={pathForLocale(code)}>
             {LABELS[code]}
           </Link>
         ))}

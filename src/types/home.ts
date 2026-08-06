@@ -8,12 +8,23 @@ export interface FilterOption {
   name: string
 }
 
+export interface ProyectoPrecio {
+  currency_default: 'COP' | string
+  mode: 'trm' | 'manual' | string
+  cop: number | null
+  usd: number | null
+  trm: number | null
+  trm_date: string | null
+}
+
 export interface ProyectoCard {
   id: number
   uuid: string
   title: string
   url: string
+  /** @deprecated Prefer `precio.cop` — kept for API/FE compat. */
   precio_desde: string | number | null
+  precio?: ProyectoPrecio | null
   ciudad: string | null
   estado: string | null
   segmentos: string[]

@@ -10,6 +10,7 @@ import { formatPriceFull } from '../../utils/formatProyecto'
 import { proyectoImageUrl } from '../../utils/proyectoImage'
 import type { FilterOption, ProyectoCard } from '../../types/home'
 import { useLocale } from '../../i18n/LocaleContext'
+import { useCurrency } from '../../currency/CurrencyContext'
 import { localizedPath } from '../../i18n/config'
 import { t } from '../../i18n/ui'
 import '../../styles/layout/home.scss'
@@ -56,6 +57,7 @@ function ControlledSelect({
 
 function ResultCard({ item }: { item: ProyectoCard }) {
   const locale = useLocale()
+  const { currency } = useCurrency()
   const premium = item.variant === 'premium'
   const image = proyectoImageUrl(item.image_url)
   const badges = [...(item.estado ? [item.estado] : []), ...item.segmentos].slice(0, 3)
@@ -78,7 +80,7 @@ function ResultCard({ item }: { item: ProyectoCard }) {
       <div className="project-card__body">
         <h3 className="project-card__title">{item.title}</h3>
         <p className="project-card__meta">{item.ciudad || 'Colombia'}</p>
-        <p className="project-card__price">{formatPriceFull(item.precio_desde)}</p>
+        <p className="project-card__price">{formatPriceFull(item, currency)}</p>
         <ul className="project-card__specs">
           {item.amenities.slice(0, 3).map((a) => (
             <li key={a}>{a}</li>

@@ -1,0 +1,31 @@
+.currency-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 2px;
+  padding: 1px;
+}
+
+.currency-toggle__btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.75);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  padding: 5px 8px;
+  cursor: pointer;
+
+  &.is-active {
+    background: #fff;
+    color: #161616;
+  }
+
+  &:hover:not(.is-active) {
+    color: #fff;
+  }
+}

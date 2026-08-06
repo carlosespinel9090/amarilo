@@ -6,6 +6,8 @@ import { proyectoGalleryImages, proyectoImageUrl } from '../../utils/proyectoIma
 import type { ProyectoDetail } from '../../types/proyecto'
 import type { ProyectoCard } from '../../types/home'
 import { useLocale } from '../../i18n/LocaleContext'
+import { useAlternateUrls } from '../../i18n/AlternateUrlsContext'
+import { useCurrency } from '../../currency/CurrencyContext'
 import { localizedPath } from '../../i18n/config'
 import { pathFor } from '../../i18n/paths'
 import { t } from '../../i18n/ui'
@@ -16,6 +18,7 @@ type TrustTab = 'avances' | 'testimonios' | 'tour'
 
 function ProjectCardLite({ item }: { item: ProyectoCard }) {
   const locale = useLocale()
+  const { currency } = useCurrency()
   const slug = item.url.replace(/^\/proyectos\//, '').replace(/^\//, '')
   const to = pathFor('proyectos', locale, slug)
   const badges = [...(item.estado ? [item.estado] : []), ...item.segmentos].slice(0, 2)
@@ -38,7 +41,7 @@ function ProjectCardLite({ item }: { item: ProyectoCard }) {
       <div className="project-card__body">
         <h3 className="project-card__title">{item.title}</h3>
         <p className="project-card__meta">{item.ciudad || 'Colombia'}</p>
-        <p className="project-card__price">{formatPriceFull(item.precio_desde)}</p>
+        <p className="project-card__price">{formatPriceFull(item, currency)}</p>
         <ul className="project-card__specs">
           {item.amenities.slice(0, 3).map((a) => (
             <li key={a}>{a}</li>
@@ -62,6 +65,8 @@ function ProjectCardLite({ item }: { item: ProyectoCard }) {
 
 export function ProyectoDetail() {
   const locale = useLocale()
+  const { currency } = useCurrency()
+  const { setUrls: setAlternateUrls } = useAlternateUrls()
   const { slug = '' } = useParams<{ slug: string }>()
   const [data, setData] = useState<ProyectoDetail | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -73,21 +78,27 @@ export function ProyectoDetail() {
     setData(null)
     setError(null)
     setActiveImage(0)
+    setAlternateUrls(null)
     if (!slug) {
       setError(t(locale, 'proyectoError'))
       return
     }
     fetchProyecto(slug, locale)
       .then((payload) => {
-        if (mounted) setData(payload)
+        if (!mounted) return
+        setData(payload)
+        if (payload.urls) {
+          setAlternateUrls(payload.urls)
+        }
       })
       .catch(() => {
         if (mounted) setError(t(locale, 'proyectoError'))
       })
     return () => {
       mounted = false
+      setAlternateUrls(null)
     }
-  }, [slug, locale])
+  }, [slug, locale, setAlternateUrls])
 
   const images = useMemo(
     () => (data ? proyectoGalleryImages(data) : []),
@@ -160,7 +171,7 @@ export function ProyectoDetail() {
             ) : null}
             <h1 className="proyecto-detail__title">{data.title}</h1>
             <div className="proyecto-detail__meta-row">
-              <p className="proyecto-detail__price">{formatPriceFull(data.precio_desde)}</p>
+              <p className="proyecto-detail__price">{formatPriceFull(data, currency)}</p>
               {data.ciudad ? (
                 <p className="proyecto-detail__location">
                   <span className="proyecto-detail__pin" aria-hidden />

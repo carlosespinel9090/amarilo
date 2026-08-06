@@ -1,18 +1,13 @@
 import { Link, useNavigate } from 'react-router-dom'
 import type { FilterOption, HomeLink, HomePayload, HomeSection, ProyectoCard } from '../../types/home'
 import { useLocale } from '../../i18n/LocaleContext'
+import { useCurrency } from '../../currency/CurrencyContext'
 import { localizedPath } from '../../i18n/config'
 import { pathFor } from '../../i18n/paths'
+import { formatPriceCompact } from '../../utils/formatProyecto'
 import { proyectoImageUrl } from '../../utils/proyectoImage'
 import { buildProyectoQuery, parseProyectoFilters } from '../../utils/proyectoFilters'
 import '../../styles/layout/home.scss'
-
-function formatPrice(value: string | number | null) {
-  if (value === null || value === undefined || value === '') return 'Consultar'
-  const n = Number(value)
-  if (Number.isNaN(n)) return String(value)
-  return `Desde $${Math.round(n / 1_000_000)}M`
-}
 
 function formatHab(min: number | null, max: number | null) {
   if (min == null && max == null) return null
@@ -88,6 +83,7 @@ function ProjectCardView({
   compact?: boolean
 }) {
   const locale = useLocale()
+  const { currency } = useCurrency()
   const premium = item.variant === 'premium'
   const hab = formatHab(item.hab_min, item.hab_max)
   const badges = [...(item.estado ? [item.estado] : []), ...item.segmentos].slice(0, 3)
@@ -113,7 +109,7 @@ function ProjectCardView({
       <div className="project-card__body">
         <h3 className="project-card__title">{item.title}</h3>
         <p className="project-card__meta">{item.ciudad || 'Colombia'}</p>
-        <p className="project-card__price">{formatPrice(item.precio_desde)}</p>
+        <p className="project-card__price">{formatPriceCompact(item, currency)}</p>
         {!compact ? (
           <ul className="project-card__specs">
             {item.area_m2 != null ? <li>{Math.round(item.area_m2)} m²</li> : null}
