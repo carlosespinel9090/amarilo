@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import type { ProyectoCard } from '../../types/home'
 import { useCurrency } from '../../currency/CurrencyContext'
 import { useLocale } from '../../i18n/LocaleContext'
@@ -6,6 +6,7 @@ import { pathFor } from '../../i18n/paths'
 import { t } from '../../i18n/ui'
 import { formatPriceCompact } from '../../utils/formatProyecto'
 import { proyectoImageUrl } from '../../utils/proyectoImage'
+import { compareIdsQuery, useCompare } from '../../hooks/useCompare'
 import { isPremiumSegment, isVisSegment } from './detailTabUtils'
 
 type Props = {
@@ -14,12 +15,21 @@ type Props = {
 
 function ProjectCardLite({ item }: { item: ProyectoCard }) {
   const locale = useLocale()
+  const navigate = useNavigate()
   const { currency } = useCurrency()
+  const { add, isCompared } = useCompare()
   const slug = item.url.replace(/^\/proyectos\//, '').replace(/^\//, '')
   const to = pathFor('proyectos', locale, slug)
   const image = proyectoImageUrl(item.image_url)
   const premium = isPremiumSegment(item.segmentos) || item.variant === 'premium'
   const vis = isVisSegment(item.segmentos)
+  const compared = isCompared(item.id)
+
+  const onCompare = () => {
+    const next = add(item.id)
+    const q = compareIdsQuery(next)
+    navigate(`${pathFor('comparador', locale)}${q ? `?${q}` : ''}`)
+  }
 
   return (
     <article
@@ -53,7 +63,12 @@ function ProjectCardLite({ item }: { item: ProyectoCard }) {
           <Link className="home-btn home-btn--dark" to={to}>
             {t(locale, 'verProyecto')}
           </Link>
-          <button type="button" className="home-btn home-btn--outline">
+          <button
+            type="button"
+            className={`home-btn home-btn--outline${compared ? ' is-active' : ''}`}
+            aria-pressed={compared}
+            onClick={onCompare}
+          >
             {t(locale, 'comparar')}
           </button>
         </div>

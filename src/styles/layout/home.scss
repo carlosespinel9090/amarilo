@@ -813,6 +813,11 @@
   border-color: #d7e0e6 !important;
   background: #fff !important;
   color: vars.$color-brand-black;
+
+  &.is-active {
+    border-color: vars.$color-brand-black !important;
+    background: #fff9e0 !important;
+  }
 }
 
 .project-card--compact {

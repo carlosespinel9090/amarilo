@@ -1,0 +1,1 @@
+export { Comparador } from './Comparador'

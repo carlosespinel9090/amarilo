@@ -26,6 +26,7 @@ export interface ProyectoCard {
   precio_desde: string | number | null
   precio?: ProyectoPrecio | null
   ciudad: string | null
+  zona?: string | null
   estado: string | null
   segmentos: string[]
   amenities: string[]

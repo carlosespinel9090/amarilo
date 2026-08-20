@@ -1,11 +1,14 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import type { ProyectoCard, ProyectoPrecio } from '../../types/home'
 import { useLocale } from '../../i18n/LocaleContext'
 import { useCurrency } from '../../currency/CurrencyContext'
 import { FALLBACK_TRM, useTrm } from '../../hooks/useTrm'
 import { localizedPath } from '../../i18n/config'
+import { pathFor } from '../../i18n/paths'
+import { t } from '../../i18n/ui'
 import { formatPriceCompact } from '../../utils/formatProyecto'
 import { proyectoImageUrl } from '../../utils/proyectoImage'
+import { compareIdsQuery, useCompare } from '../../hooks/useCompare'
 
 function stubPrecio(cop: number, trm: number = FALLBACK_TRM, trmDate: string | null = null): ProyectoPrecio {
   return {
@@ -92,8 +95,10 @@ export function ExploreProjects({
   items,
 }: ExploreProjectsProps) {
   const locale = useLocale()
+  const navigate = useNavigate()
   const { currency } = useCurrency()
   const { trm, fecha } = useTrm()
+  const { add, isCompared } = useCompare()
   const resolvedItems = items ?? buildStubProjects(trm, fecha)
 
   return (
@@ -108,6 +113,12 @@ export function ExploreProjects({
               item.unidades != null
                 ? `${item.unidades} uds. disponibles${item.estado ? ` · ${item.estado}` : ''}`
                 : item.estado
+            const compared = isCompared(item.id)
+            const onCompare = () => {
+              const next = add(item.id)
+              const q = compareIdsQuery(next)
+              navigate(`${pathFor('comparador', locale)}${q ? `?${q}` : ''}`)
+            }
             return (
               <article key={item.uuid} className="project-card perfilador-explore__card">
                 <div
@@ -142,10 +153,15 @@ export function ExploreProjects({
                   {units ? <p className="perfilador-explore__units">{units}</p> : null}
                   <div className="project-card__actions perfilador-explore__actions">
                     <Link className="home-btn" to={localizedPath(item.url || '/', locale)}>
-                      Ver proyecto
+                      {t(locale, 'verProyecto')}
                     </Link>
-                    <button type="button" className="home-btn home-btn--outline">
-                      Comparar
+                    <button
+                      type="button"
+                      className={`home-btn home-btn--outline${compared ? ' is-active' : ''}`}
+                      aria-pressed={compared}
+                      onClick={onCompare}
+                    >
+                      {t(locale, 'comparar')}
                     </button>
                   </div>
                 </div>

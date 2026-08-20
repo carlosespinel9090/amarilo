@@ -6,6 +6,7 @@ import { ProyectoDetail } from './pages/ProyectoDetail'
 import { ProyectosList } from './pages/ProyectosList'
 import { NotFound } from './pages/NotFound'
 import { Perfilador } from './pages/Perfilador'
+import { Comparador } from './pages/Comparador'
 import { UtilityBar } from './components/UtilityBar'
 import { Header } from './components/Header'
 import { Footer } from './components/Footer'
@@ -25,6 +26,7 @@ import './styles/layout/site-chrome.scss'
 const PAGE_ROUTES: Array<{ key: RouteKey; element: ReactNode }> = [
   { key: 'about', element: <About /> },
   { key: 'perfilador', element: <Perfilador /> },
+  { key: 'comparador', element: <Comparador /> },
 ]
 
 const LOCALE_ROOTS: Array<{ path: string; locale: Locale }> = [
