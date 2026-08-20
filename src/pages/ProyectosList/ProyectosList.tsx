@@ -20,6 +20,13 @@ const SEGMENTO_OPTIONS: FilterOption[] = [
   { id: 'Inversión', name: 'Inversión' },
 ]
 
+const HAB_OPTIONS = [
+  { id: '1', name: '1' },
+  { id: '2', name: '2' },
+  { id: '3', name: '3' },
+  { id: '4', name: '4+' },
+] as const
+
 const PAGE_SIZE = 12
 
 function ControlledSelect({
@@ -57,6 +64,19 @@ function ControlledSelect({
       </select>
     </div>
   )
+}
+
+function presupuestoLabel(
+  options: FilterOption[],
+  value: string,
+  emptyLabel: string,
+): string {
+  if (!value) {
+    if (options.length === 0) return emptyLabel
+    if (options.length === 1) return options[0].name
+    return `${options[0].name} – ${options[options.length - 1].name}`
+  }
+  return options.find((o) => String(o.id) === value)?.name ?? emptyLabel
 }
 
 export function ProyectosList() {
@@ -200,78 +220,60 @@ export function ProyectosList() {
     <div className="proyectos-list">
       <section className="proyectos-list__hero">
         <div className="proyectos-list__hero-bg" aria-hidden />
+        <div className="proyectos-list__hero-blob proyectos-list__hero-blob--left" aria-hidden />
+        <div className="proyectos-list__hero-blob proyectos-list__hero-blob--right" aria-hidden />
         <div className="home-container proyectos-list__hero-inner">
           <h1 className="proyectos-list__hero-title">{t(locale, 'exploraOferta')}</h1>
-          <form className="home-search proyectos-list__bar" onSubmit={submitBar}>
-            <ControlledSelect
-              className="home-search__field"
-              label={t(locale, 'filtroCiudad')}
-              name="ciudad"
-              options={filterOpts.ciudades}
-              value={draft.ciudad ?? ''}
-              emptyLabel={t(locale, 'todasCiudades')}
-              onChange={onBarChange}
-            />
-            <ControlledSelect
-              className="home-search__field"
-              label={t(locale, 'filtroTipo')}
-              name="tipo"
-              options={filterOpts.tipos}
-              value={draft.tipo ?? ''}
-              emptyLabel={t(locale, 'todosTipos')}
-              onChange={onBarChange}
-            />
-            <ControlledSelect
-              className="home-search__field"
-              label={t(locale, 'filtroSegmento')}
-              name="segmento"
-              options={segmentoOptions}
-              value={draft.segmento ?? ''}
-              emptyLabel={t(locale, 'todosSegmentos')}
-              onChange={onBarChange}
-            />
-            <ControlledSelect
-              className="home-search__field"
-              label={t(locale, 'filtroPresupuesto')}
-              name="presupuesto"
-              options={filterOpts.presupuestos}
-              value={draft.presupuesto ?? ''}
-              emptyLabel={t(locale, 'todosPresupuestos')}
-              onChange={onBarChange}
-            />
-            <ControlledSelect
-              className="home-search__field"
-              label={t(locale, 'filtroEtapa')}
-              name="etapa"
-              options={filterOpts.etapas}
-              value={draft.etapa ?? ''}
-              emptyLabel={t(locale, 'todasEtapas')}
-              onChange={onBarChange}
-            />
-            <ControlledSelect
-              className="home-search__field"
-              label={t(locale, 'filtroHab')}
-              name="hab"
-              options={[
-                { id: '1', name: '1' },
-                { id: '2', name: '2' },
-                { id: '3', name: '3' },
-                { id: '4', name: '4' },
-                { id: '5', name: '5' },
-              ]}
-              value={draft.hab ?? ''}
-              emptyLabel={t(locale, 'todasHab')}
-              onChange={onBarChange}
-            />
-            <button type="submit" className="home-search__submit" aria-label={t(locale, 'buscar')} />
-          </form>
+          <p className="proyectos-list__hero-sub">{t(locale, 'exploraOfertaSub')}</p>
         </div>
       </section>
+
+      <div className="home-container proyectos-list__search-wrap">
+        <form className="home-search proyectos-list__bar" onSubmit={submitBar}>
+          <ControlledSelect
+            className="home-search__field"
+            label={t(locale, 'filtroCiudad')}
+            name="ciudad"
+            options={filterOpts.ciudades}
+            value={draft.ciudad ?? ''}
+            emptyLabel={t(locale, 'todasCiudades')}
+            onChange={onBarChange}
+          />
+          <ControlledSelect
+            className="home-search__field"
+            label={t(locale, 'filtroTipo')}
+            name="tipo"
+            options={filterOpts.tipos}
+            value={draft.tipo ?? ''}
+            emptyLabel={t(locale, 'todosTipos')}
+            onChange={onBarChange}
+          />
+          <ControlledSelect
+            className="home-search__field"
+            label={t(locale, 'filtroPresupuesto')}
+            name="presupuesto"
+            options={filterOpts.presupuestos}
+            value={draft.presupuesto ?? ''}
+            emptyLabel={t(locale, 'todosPresupuestos')}
+            onChange={onBarChange}
+          />
+          <ControlledSelect
+            className="home-search__field"
+            label={t(locale, 'filtroEtapa')}
+            name="etapa"
+            options={filterOpts.etapas}
+            value={draft.etapa ?? ''}
+            emptyLabel={t(locale, 'todasEtapas')}
+            onChange={onBarChange}
+          />
+          <button type="submit" className="home-search__submit" aria-label={t(locale, 'buscar')} />
+        </form>
+      </div>
 
       <div className="home-container proyectos-list__body">
         <aside className="proyectos-list__sidebar">
           <h2 className="proyectos-list__sidebar-title">
-            <span className="home-badge__dot" />
+            <span className="proyectos-list__sidebar-dot" aria-hidden />
             {t(locale, 'filtros')}
           </h2>
           <form onSubmit={applySidebar} className="proyectos-list__sidebar-form">
@@ -283,22 +285,123 @@ export function ProyectosList() {
               emptyLabel={t(locale, 'todasCiudades')}
               onChange={onBarChange}
             />
-            <ControlledSelect
-              label={t(locale, 'filtroPresupuesto')}
-              name="presupuesto"
-              options={filterOpts.presupuestos}
-              value={draft.presupuesto ?? ''}
-              emptyLabel={t(locale, 'todosPresupuestos')}
-              onChange={onBarChange}
-            />
-            <ControlledSelect
-              label={t(locale, 'filtroTipo')}
-              name="tipo"
-              options={filterOpts.tipos}
-              value={draft.tipo ?? ''}
-              emptyLabel={t(locale, 'todosTipos')}
-              onChange={onBarChange}
-            />
+
+            <div className="proyectos-list__field">
+              <label htmlFor="pl-presupuesto-range">{t(locale, 'filtroRangoPrecio')}</label>
+              <input
+                id="pl-presupuesto-range"
+                className="proyectos-list__price-slider"
+                type="range"
+                min={-1}
+                max={Math.max(filterOpts.presupuestos.length - 1, -1)}
+                step={1}
+                disabled={filterOpts.presupuestos.length === 0}
+                value={(() => {
+                  const idx = filterOpts.presupuestos.findIndex(
+                    (o) => String(o.id) === (draft.presupuesto ?? ''),
+                  )
+                  return idx >= 0 ? idx : -1
+                })()}
+                aria-valuetext={presupuestoLabel(
+                  filterOpts.presupuestos,
+                  draft.presupuesto ?? '',
+                  t(locale, 'todosPresupuestos'),
+                )}
+                onChange={(e) => {
+                  const idx = Number(e.target.value)
+                  if (idx < 0) {
+                    onBarChange('presupuesto', '')
+                    return
+                  }
+                  const opt = filterOpts.presupuestos[idx]
+                  onBarChange('presupuesto', opt ? String(opt.id) : '')
+                }}
+              />
+              <p className="proyectos-list__price-value" id="pl-presupuesto-label">
+                {presupuestoLabel(
+                  filterOpts.presupuestos,
+                  draft.presupuesto ?? '',
+                  t(locale, 'todosPresupuestos'),
+                )}
+              </p>
+            </div>
+
+            <div className="proyectos-list__field">
+              <span className="proyectos-list__field-label" id="pl-tipo-label">
+                {t(locale, 'filtroTipoInmueble')}
+              </span>
+              <div className="proyectos-list__chips" role="group" aria-labelledby="pl-tipo-label">
+                {filterOpts.tipos.map((opt) => {
+                  const id = String(opt.id)
+                  const selected = (draft.tipo ?? '') === id
+                  return (
+                    <button
+                      key={id}
+                      type="button"
+                      className={
+                        selected
+                          ? 'proyectos-list__chip proyectos-list__chip--active'
+                          : 'proyectos-list__chip'
+                      }
+                      aria-pressed={selected}
+                      onClick={() => onBarChange('tipo', selected ? '' : id)}
+                    >
+                      {opt.name}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+
+            <div className="proyectos-list__field">
+              <span className="proyectos-list__field-label" id="pl-hab-label">
+                {t(locale, 'filtroHab')}
+              </span>
+              <div className="proyectos-list__hab" role="group" aria-labelledby="pl-hab-label">
+                {HAB_OPTIONS.map((opt) => {
+                  const selected = (draft.hab ?? '') === opt.id
+                  const label = opt.id === '4' ? t(locale, 'hab4Plus') : opt.name
+                  return (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      className={
+                        selected
+                          ? 'proyectos-list__hab-btn proyectos-list__hab-btn--active'
+                          : 'proyectos-list__hab-btn'
+                      }
+                      aria-pressed={selected}
+                      onClick={() => onBarChange('hab', selected ? '' : opt.id)}
+                    >
+                      {label}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+
+            <div className="proyectos-list__field">
+              <span className="proyectos-list__field-label" id="pl-etapa-label">
+                {t(locale, 'filtroEtapaProyecto')}
+              </span>
+              <div className="proyectos-list__checks" role="group" aria-labelledby="pl-etapa-label">
+                {filterOpts.etapas.map((opt) => {
+                  const id = String(opt.id)
+                  const checked = (draft.etapa ?? '') === id
+                  return (
+                    <label key={id} className="proyectos-list__check">
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() => onBarChange('etapa', checked ? '' : id)}
+                      />
+                      <span>{opt.name}</span>
+                    </label>
+                  )
+                })}
+              </div>
+            </div>
+
             <ControlledSelect
               label={t(locale, 'filtroSegmento')}
               name="segmento"
@@ -307,30 +410,6 @@ export function ProyectosList() {
               emptyLabel={t(locale, 'todosSegmentos')}
               onChange={onBarChange}
             />
-            <ControlledSelect
-              label={t(locale, 'filtroEtapa')}
-              name="etapa"
-              options={filterOpts.etapas}
-              value={draft.etapa ?? ''}
-              emptyLabel={t(locale, 'todasEtapas')}
-              onChange={onBarChange}
-            />
-            <ControlledSelect
-              label={t(locale, 'filtroHab')}
-              name="hab"
-              options={[
-                { id: '1', name: '1' },
-                { id: '2', name: '2' },
-                { id: '3', name: '3' },
-                { id: '4', name: '4' },
-                { id: '5', name: '5' },
-              ]}
-              value={draft.hab ?? ''}
-              emptyLabel={t(locale, 'todasHab')}
-              onChange={onBarChange}
-            />
-
-            <p className="proyectos-list__sidebar-note">{t(locale, 'filtrosAvanzadosNota')}</p>
 
             <button type="submit" className="home-btn proyectos-list__apply">
               {t(locale, 'aplicarFiltros')}
@@ -338,23 +417,38 @@ export function ProyectosList() {
             <button type="button" className="proyectos-list__clear" onClick={clearFilters}>
               {t(locale, 'limpiarFiltros')}
             </button>
-          </form>
 
-          <aside className="proyectos-list__tip">
-            <p>{t(locale, 'tipFinanciacion')}</p>
-            <Link to={localizedPath('/financiacion', locale)} className="proyectos-list__tip-link">
-              {t(locale, 'tipFinanciacionCta')}
-            </Link>
-          </aside>
+            <div className="proyectos-list__tip">
+              <span className="proyectos-list__tip-icon" aria-hidden>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5V15h8v-1.5A6 6 0 0 0 12 3Z"
+                    stroke="currentColor"
+                    strokeWidth="1.75"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+              <p>{t(locale, 'tipFinanciacion')}</p>
+            </div>
+          </form>
         </aside>
 
         <div className="proyectos-list__results">
           <div className="proyectos-list__results-head">
-            <span className="home-badge home-badge--solid-yellow">
+            <p className="proyectos-list__count">
+              <span className="proyectos-list__count-dot" aria-hidden />
               {loading && page === 1
                 ? t(locale, 'loading')
                 : t(locale, 'proyectosEncontrados').replace('{n}', String(total))}
-            </span>
+            </p>
+            <label className="proyectos-list__sort">
+              <span>{t(locale, 'ordenarPor')}</span>
+              <select defaultValue="relevancia" aria-label={t(locale, 'ordenarPor')}>
+                <option value="relevancia">{t(locale, 'relevancia')}</option>
+              </select>
+            </label>
           </div>
 
           {error ? <p className="proyectos-list__error">{error}</p> : null}
@@ -383,6 +477,31 @@ export function ProyectosList() {
           ) : null}
         </div>
       </div>
+
+      <section className="proyectos-list__cta">
+        <div className="home-container">
+          <div className="proyectos-list__cta-box">
+            <div className="proyectos-list__cta-blob" aria-hidden />
+            <div className="proyectos-list__cta-copy">
+              <h2>{t(locale, 'listoHogar')}</h2>
+              <p>{t(locale, 'listoHogarSub')}</p>
+            </div>
+            <div className="proyectos-list__cta-actions">
+              <Link className="home-btn home-btn--white" to={localizedPath('/contacto', locale)}>
+                {t(locale, 'quieroContactoCta')}
+              </Link>
+              <a
+                className="home-btn home-btn--outline proyectos-list__cta-wa"
+                href="https://wa.me/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                {t(locale, 'whatsappCta')}
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }

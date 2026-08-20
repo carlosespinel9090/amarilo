@@ -31,8 +31,8 @@ export function ProjectCardView({
   const hab = formatHab(item.hab_min, item.hab_max)
   const premiumLabel = t(locale, 'badgePremium')
   const badges = [
-    ...(item.estado ? [item.estado] : []),
     ...item.segmentos.filter((s) => !/premium/i.test(s)),
+    ...(item.estado ? [item.estado] : []),
     ...(premium ? [premiumLabel] : []),
   ].slice(0, 3)
   const image = proyectoImageUrl(item.image_url)
@@ -42,10 +42,24 @@ export function ProjectCardView({
   const projectTo = localizedPath(item.url || '/', locale)
   const financeTo = pathFor('financiacion', locale)
   const compareTo = pathFor('comparador', locale)
-  const availability =
+  const availabilityParts = [
     item.unidades != null
       ? t(locale, 'specsUnidades').replace('{n}', String(item.unidades))
-      : null
+      : null,
+    item.estado || null,
+  ].filter(Boolean)
+  const amenityItems =
+    item.amenities.length > 0
+      ? item.amenities.slice(0, 3)
+      : [hab, item.area_m2 != null ? `${Math.round(item.area_m2)} m²` : null].filter(
+          Boolean,
+        ) as string[]
+
+  const badgeClass = (label: string) => {
+    if (/premium/i.test(label)) return ' project-card__badge--premium'
+    if (/\bvis\b/i.test(label) || /no\s*vis/i.test(label)) return ' project-card__badge--vis'
+    return ''
+  }
 
   return (
     <article
@@ -80,12 +94,7 @@ export function ProjectCardView({
         {badges.length ? (
           <div className="project-card__badges">
             {badges.map((b) => (
-              <span
-                key={b}
-                className={`project-card__badge${
-                  /premium/i.test(b) ? ' project-card__badge--premium' : ''
-                }`}
-              >
+              <span key={b} className={`project-card__badge${badgeClass(b)}`}>
                 {b}
               </span>
             ))}
@@ -94,7 +103,7 @@ export function ProjectCardView({
         <h3 className="project-card__title">{item.title}</h3>
         <p className="project-card__meta">
           <span className="project-card__pin" aria-hidden />
-          {item.ciudad || 'Colombia'}
+          <span>{item.ciudad || 'Colombia'}</span>
         </p>
         <p className="project-card__price-row">
           <span className="project-card__price">{price}</span>
@@ -104,26 +113,25 @@ export function ProjectCardView({
             </Link>
           ) : null}
         </p>
-        {!compact ? (
+        {!compact && amenityItems.length ? (
           <ul className="project-card__specs">
-            {item.amenities.slice(0, 4).map((a) => (
-              <li key={a}>{a}</li>
+            {amenityItems.map((a) => (
+              <li key={a}>
+                <span className="project-card__spec-icon" aria-hidden />
+                {a}
+              </li>
             ))}
-            {!item.amenities.length && hab ? <li>{hab}</li> : null}
-            {!item.amenities.length && item.area_m2 != null ? (
-              <li>{Math.round(item.area_m2)} m²</li>
-            ) : null}
           </ul>
         ) : null}
-        {availability && !compact ? (
-          <p className="project-card__availability">{availability}</p>
+        {availabilityParts.length && !compact ? (
+          <p className="project-card__availability">{availabilityParts.join(' · ')}</p>
         ) : null}
         <div className="project-card__actions">
-          <Link className="home-btn" to={projectTo}>
+          <Link className="home-btn project-card__cta-primary" to={projectTo}>
             {t(locale, 'verProyecto')}
           </Link>
           {!compact ? (
-            <Link className="home-btn home-btn--outline" to={compareTo}>
+            <Link className="home-btn home-btn--outline project-card__cta-secondary" to={compareTo}>
               {t(locale, 'comparar')}
             </Link>
           ) : null}
