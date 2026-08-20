@@ -9,7 +9,7 @@
   ],
   "primaryButton": {
     "text": "Iniciar",
-    "href": "/perfil"
+    "href": "/perfilador"
   },
   "secondaryButton": {
     "text": "Simular mi cuota",

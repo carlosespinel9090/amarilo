@@ -78,10 +78,59 @@ export function formatPriceCompact(
   return `Desde $${Math.round(amount / 1_000_000)}M`
 }
 
+/**
+ * Budget/slider label from a COP amount.
+ * Preferences stay in COP; only the display converts when currency is USD.
+ */
+export function formatBudgetAmount(
+  cop: number,
+  currency: CurrencyCode = 'COP',
+  trm: number | null = null,
+): string {
+  if (currency === 'USD') {
+    if (trm == null || trm <= 0) return 'Consultar'
+    const usd = cop / trm
+    const formatted = new Intl.NumberFormat('es-CO', {
+      maximumFractionDigits: 0,
+    }).format(Math.round(usd))
+    return `${formatted} USD`
+  }
+
+  const millions = cop / 1_000_000
+  if (millions >= 1000) {
+    const billions = millions / 1000
+    return `$${Number.isInteger(billions) ? billions : billions.toFixed(1)}B`
+  }
+  return `$${Math.round(millions)}M`
+}
+
 export function formatHabRange(min: number | null, max: number | null): string | null {
   if (min == null && max == null) return null
   if (min != null && max != null && min !== max) return `${min}-${max} Habitaciones`
   return `${min ?? max} Habitaciones`
+}
+
+/** Precio tipología (solo COP en CMS) con conversión opcional vía TRM del proyecto. */
+export function formatCopAmount(
+  cop: number | null | undefined,
+  currency: CurrencyCode = 'COP',
+  trm: number | null = null,
+  mode: 'full' | 'compact' = 'compact',
+): string {
+  if (cop == null || Number.isNaN(Number(cop))) return 'Consultar'
+  const amount = Number(cop)
+  const usd = trm != null && trm > 0 ? amount / trm : null
+  const source: PriceSource = {
+    precio: {
+      currency_default: 'COP',
+      mode: 'trm',
+      cop: amount,
+      usd,
+      trm,
+      trm_date: null,
+    },
+  }
+  return mode === 'full' ? formatPriceFull(source, currency) : formatPriceCompact(source, currency)
 }
 
 export function formatSpecs(item: {

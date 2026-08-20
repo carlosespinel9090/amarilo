@@ -2,7 +2,8 @@ import { apiClient } from '../api/client'
 
 export async function postLead(payload: {
   nombre: string
-  email: string
+  /** Optional for origen perfilador; required for other flows. */
+  email?: string
   telefono?: string
   origen?: string
   proyecto?: string

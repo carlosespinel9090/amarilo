@@ -1,19 +1,30 @@
 import { Link, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 import type { FilterOption, HomeLink, HomePayload, HomeSection, ProyectoCard } from '../../types/home'
 import { useLocale } from '../../i18n/LocaleContext'
-import { useCurrency } from '../../currency/CurrencyContext'
 import { localizedPath } from '../../i18n/config'
 import { pathFor } from '../../i18n/paths'
 import { t } from '../../i18n/ui'
-import { formatPriceCompact } from '../../utils/formatProyecto'
 import { proyectoImageUrl } from '../../utils/proyectoImage'
 import { buildProyectoQuery, parseProyectoFilters } from '../../utils/proyectoFilters'
+import { HeroMediaSlider } from './HeroMediaSlider'
+import { ProjectTabsSection } from './ProjectTabsSection'
 import '../../styles/layout/home.scss'
 
-function formatHab(min: number | null, max: number | null) {
-  if (min == null && max == null) return null
-  if (min != null && max != null && min !== max) return `${min}-${max} hab`
-  return `${min ?? max} hab`
+/** Rewrite legacy teaser targets to the Perfilador wizard. */
+function resolveHomeCtaUrl(url: string): string {
+  const path = url.split(/[?#]/)[0] || '/'
+  if (
+    path === '/asistente' ||
+    path === '/assistant' ||
+    path === '/perfil' ||
+    path === '/perfilador' ||
+    path === '/profiler' ||
+    path === '/profileur'
+  ) {
+    return '/perfilador'
+  }
+  return url
 }
 
 function Cta({ link, className }: { link: HomeLink | null; className?: string }) {
@@ -27,8 +38,9 @@ function Cta({ link, className }: { link: HomeLink | null; className?: string })
       </a>
     )
   }
+  const resolved = resolveHomeCtaUrl(link.url || '/')
   return (
-    <Link className={className} to={localizedPath(link.url || '/', locale)}>
+    <Link className={className} to={localizedPath(resolved, locale)}>
       {link.title}
     </Link>
   )
@@ -40,24 +52,29 @@ function SelectField({
   options,
   defaultLabel,
   value,
+  withPin = false,
 }: {
   label: string
   name: string
   options: FilterOption[]
   defaultLabel: string
   value?: string
+  withPin?: boolean
 }) {
   return (
-    <div className="home-search__field">
+    <div className={`home-search__field${withPin ? ' home-search__field--pin' : ''}`}>
       <label htmlFor={`filter-${name}`}>{label}</label>
-      <select id={`filter-${name}`} name={name} defaultValue={value ?? ''}>
-        <option value="">{defaultLabel}</option>
-        {options.map((opt) => (
-          <option key={String(opt.id)} value={String(opt.id)}>
-            {opt.name}
-          </option>
-        ))}
-      </select>
+      <div className="home-search__control">
+        {withPin ? <span className="home-search__pin" aria-hidden /> : null}
+        <select id={`filter-${name}`} name={name} defaultValue={value ?? ''}>
+          <option value="">{defaultLabel}</option>
+          {options.map((opt) => (
+            <option key={String(opt.id)} value={String(opt.id)}>
+              {opt.name}
+            </option>
+          ))}
+        </select>
+      </div>
     </div>
   )
 }
@@ -76,69 +93,6 @@ function KpiValue({ value }: { value: string }) {
   )
 }
 
-function ProjectCardView({
-  item,
-  compact = false,
-}: {
-  item: ProyectoCard
-  compact?: boolean
-}) {
-  const locale = useLocale()
-  const { currency } = useCurrency()
-  const premium = item.variant === 'premium'
-  const hab = formatHab(item.hab_min, item.hab_max)
-  const badges = [...(item.estado ? [item.estado] : []), ...item.segmentos].slice(0, 3)
-  const image = proyectoImageUrl(item.image_url)
-
-  return (
-    <article
-      className={`project-card${premium ? ' project-card--premium' : ''}${compact ? ' project-card--compact' : ''}`}
-    >
-      <div
-        className="project-card__media"
-        style={{ backgroundImage: `url(${image})`, backgroundSize: 'cover' }}
-      >
-        <div className="project-card__badges">
-          {badges.map((b) => (
-            <span key={b} className="project-card__badge">
-              {b}
-            </span>
-          ))}
-        </div>
-        <button type="button" className="project-card__fav" aria-label="Favorito" tabIndex={-1} />
-      </div>
-      <div className="project-card__body">
-        <h3 className="project-card__title">{item.title}</h3>
-        <p className="project-card__meta">{item.ciudad || 'Colombia'}</p>
-        <p className="project-card__price">{formatPriceCompact(item, currency)}</p>
-        {!compact ? (
-          <ul className="project-card__specs">
-            {item.area_m2 != null ? <li>{Math.round(item.area_m2)} m²</li> : null}
-            {hab ? <li>{hab}</li> : null}
-            {item.banos != null ? <li>{item.banos} baños</li> : null}
-            {item.amenities.slice(0, 3).map((a) => (
-              <li key={a}>{a}</li>
-            ))}
-          </ul>
-        ) : null}
-        <div className="project-card__actions">
-          <Link
-            className={`home-btn${premium || compact ? '' : ' home-btn--dark'}`}
-            to={localizedPath(item.url || '/', locale)}
-          >
-            Ver proyecto
-          </Link>
-          {!compact ? (
-            <button type="button" className="home-btn home-btn--outline">
-              Comparar
-            </button>
-          ) : null}
-        </div>
-      </div>
-    </article>
-  )
-}
-
 function SectionHero({
   data,
   filters,
@@ -150,95 +104,140 @@ function SectionHero({
   const navigate = useNavigate()
   return (
     <section className="home-section home-hero">
-      <div className="home-hero__bg">
-        {data.image_url ? (
-          <img className="home-hero__bg-img" src={data.image_url} alt="" />
-        ) : null}
+      <div className="home-hero__media-shell">
+        <div className="home-hero__bg">
+          <HeroMediaSlider slides={data.slides} imageUrl={data.image_url} />
+        </div>
+        <div className="home-container home-hero__content">
+          {data.badge ? (
+            <span className="home-badge home-badge--light">
+              <span className="home-badge__dot" />
+              {data.badge}
+            </span>
+          ) : null}
+          <h1 className="home-hero__title">{data.title}</h1>
+          <p className="home-hero__subtitle">{data.subtitle}</p>
+        </div>
       </div>
-      <div className="home-hero__blob home-hero__blob--left" aria-hidden />
-      <div className="home-hero__blob home-hero__blob--right" aria-hidden />
-      <div className="home-container home-hero__content">
-        {data.badge ? (
-          <span className="home-badge home-badge--light">
-            <span className="home-badge__dot" />
-            {data.badge}
-          </span>
-        ) : null}
-        <h1 className="home-hero__title">{data.title}</h1>
-        <p className="home-hero__subtitle">{data.subtitle}</p>
+      <div className="home-container home-hero__search-wrap">
         <form
           className="home-search"
           onSubmit={(e) => {
             e.preventDefault()
             const form = e.currentTarget
-            const filters = parseProyectoFilters(new FormData(form))
+            const parsed = parseProyectoFilters(new FormData(form))
             const base = data.search_cta?.url || '/proyectos'
             if (base.startsWith('http')) {
               const url = new URL(base)
-              Object.entries(filters).forEach(([k, v]) => {
+              Object.entries(parsed).forEach(([k, v]) => {
                 if (v) url.searchParams.set(k, v)
               })
               window.location.href = url.toString()
               return
             }
-            // Always land on list route with query (ignore CMS path extras).
-            navigate(`${pathFor('proyectos', locale)}${buildProyectoQuery(filters)}`)
+            navigate(`${pathFor('proyectos', locale)}${buildProyectoQuery(parsed)}`)
           }}
         >
           <SelectField
-            label="Ciudad"
+            label={t(locale, 'filtroCiudad')}
             name="ciudad"
             options={filters.ciudades}
-            defaultLabel="Todas"
+            defaultLabel="Ciudad"
+            withPin
           />
-          <SelectField label="Tipo" name="tipo" options={filters.tipos} defaultLabel="Todos" />
           <SelectField
-            label="Presupuesto"
+            label={t(locale, 'filtroTipo')}
+            name="tipo"
+            options={filters.tipos}
+            defaultLabel="Selecciona"
+          />
+          <SelectField
+            label={t(locale, 'filtroPresupuesto')}
             name="presupuesto"
             options={filters.presupuestos}
-            defaultLabel="Todos"
+            defaultLabel="Define rango"
           />
-          <SelectField label="Etapa" name="etapa" options={filters.etapas} defaultLabel="Todas" />
           <SelectField
-            label={t(locale, 'filtroHab')}
-            name="hab"
-            options={[
-              { id: '1', name: '1' },
-              { id: '2', name: '2' },
-              { id: '3', name: '3' },
-              { id: '4', name: '4' },
-              { id: '5', name: '5+' },
-            ]}
-            defaultLabel={t(locale, 'todasHab')}
+            label={t(locale, 'filtroEtapa')}
+            name="etapa"
+            options={filters.etapas}
+            defaultLabel="Selecciona"
           />
-          <button type="submit" className="home-search__submit" aria-label="Buscar" />
+          <button
+            type="submit"
+            className="home-search__submit"
+            aria-label={t(locale, 'buscar')}
+          />
         </form>
       </div>
     </section>
   )
 }
 
-function CityCarousel({
+function NovedadesCarousel({
   data,
 }: {
   data: Extract<HomeSection, { type: 'ref_proyectos_ciudad' }>['data']
 }) {
+  const locale = useLocale()
+  const [index, setIndex] = useState(0)
+  const items = data.items
+
+  useEffect(() => {
+    setIndex(0)
+  }, [items])
+
+  if (!items.length) return null
+
+  const current = items[Math.min(index, items.length - 1)] as ProyectoCard
+  const image = proyectoImageUrl(current.image_url)
+  const multi = items.length > 1
+
+  const go = (dir: -1 | 1) => {
+    setIndex((i) => (i + dir + items.length) % items.length)
+  }
+
   return (
-    <section className="home-section home-city">
+    <section className="home-section home-novedades">
+      <div className="home-novedades__blob" aria-hidden />
       <div className="home-container">
-        <div className="home-city__head">
-          <div>
-            {data.badge ? <span className="home-badge home-badge--yellow">{data.badge}</span> : null}
-            <h2 className="home-title">{data.title}</h2>
-            {data.text ? <p className="home-text">{data.text}</p> : null}
-          </div>
+        <div className="home-novedades__head">
+          {data.badge ? (
+            <span className="home-badge home-badge--solid-yellow">{data.badge}</span>
+          ) : null}
+          <h2 className="home-title home-title--light">{data.title}</h2>
+          {data.text ? <p className="home-text home-text--light">{data.text}</p> : null}
         </div>
-        <div className="home-city__track">
-          {data.items.map((item) => (
-            <div key={item.uuid} className="home-city__slide">
-              <ProjectCardView item={item} compact />
+        <div className="home-novedades__stage">
+          {multi ? (
+            <button
+              type="button"
+              className="home-novedades__nav home-novedades__nav--prev"
+              aria-label={t(locale, 'anterior')}
+              onClick={() => go(-1)}
+            />
+          ) : null}
+          <Link
+            className="home-novedades__slide"
+            to={localizedPath(current.url || '/', locale)}
+            style={{
+              backgroundImage: `linear-gradient(180deg, rgba(22,22,22,0.05) 40%, rgba(22,22,22,0.55) 100%), url(${image})`,
+            }}
+          >
+            <div className="home-novedades__caption">
+              <h3>{current.title}</h3>
+              {current.ciudad ? <p>{current.ciudad}</p> : null}
+              <span className="home-novedades__cta">{t(locale, 'verProyecto')} →</span>
             </div>
-          ))}
+          </Link>
+          {multi ? (
+            <button
+              type="button"
+              className="home-novedades__nav home-novedades__nav--next"
+              aria-label={t(locale, 'siguiente')}
+              onClick={() => go(1)}
+            />
+          ) : null}
         </div>
       </div>
     </section>
@@ -273,25 +272,11 @@ function SectionRenderer({
       )
     case 'ref_proyectos':
       return (
-        <section className="home-section home-projects">
-          <div className="home-container">
-            <div className="home-projects__head">
-              <div>
-                {section.data.badge ? (
-                  <span className="home-badge home-badge--yellow">{section.data.badge}</span>
-                ) : null}
-                <h2 className="home-title">{section.data.title}</h2>
-                {section.data.text ? <p className="home-text">{section.data.text}</p> : null}
-              </div>
-              <Cta link={section.data.link} className="home-btn home-btn--outline" />
-            </div>
-            <div className="home-projects__grid">
-              {section.data.items.map((item) => (
-                <ProjectCardView key={item.uuid} item={item} />
-              ))}
-            </div>
-          </div>
-        </section>
+        <ProjectTabsSection
+          data={section.data}
+          ciudades={filters.ciudades}
+          etapas={filters.etapas}
+        />
       )
     case 'beneficios':
       return (
@@ -302,7 +287,9 @@ function SectionRenderer({
               <span className="home-badge home-badge--solid-yellow">{section.data.badge}</span>
             ) : null}
             <h2 className="home-title home-title--light">{section.data.title}</h2>
-            {section.data.text ? <p className="home-text home-text--light">{section.data.text}</p> : null}
+            {section.data.text ? (
+              <p className="home-text home-text--light">{section.data.text}</p>
+            ) : null}
             <div className="home-why__grid">
               {section.data.cards.map((card) => (
                 <article key={card.title} className="home-why__card">
@@ -321,6 +308,8 @@ function SectionRenderer({
     case 'asistente_split':
       return (
         <section className="home-section home-assistant">
+          <div className="home-assistant__blob home-assistant__blob--left" aria-hidden />
+          <div className="home-assistant__blob home-assistant__blob--right" aria-hidden />
           <div className="home-container home-assistant__grid">
             <div
               className="home-assistant__media"
@@ -347,6 +336,9 @@ function SectionRenderer({
               <div className="home-assistant__actions">
                 <Cta link={section.data.primary} className="home-btn home-btn--dark" />
                 <Cta link={section.data.secondary} className="home-btn home-btn--outline" />
+                <Link className="home-btn home-btn--outline" to={pathFor('about', locale)}>
+                  {t(locale, 'conoceBlog')}
+                </Link>
               </div>
             </div>
           </div>
@@ -404,8 +396,10 @@ function SectionRenderer({
                   >
                     <div className="home-explore__body">
                       <h3>{route.title}</h3>
-                      <p>{route.text}</p>
-                      <span className="home-explore__cta">{route.link?.title || 'Explorar'} →</span>
+                      {route.text ? <p>{route.text}</p> : null}
+                      <span className="home-explore__cta">
+                        {route.link?.title || t(locale, 'verMas')} →
+                      </span>
                     </div>
                   </Link>
                 )
@@ -415,46 +409,9 @@ function SectionRenderer({
         </section>
       )
     case 'ref_proyectos_ciudad':
-      return <CityCarousel data={section.data} />
+      return <NovedadesCarousel data={section.data} />
     case 'financiacion_split':
-      return (
-        <section className="home-section home-finance">
-          <div
-            className={`home-container home-finance__grid${section.data.reversed ? ' is-reversed' : ''}`}
-          >
-            <div className="home-finance__copy">
-              {section.data.badge ? (
-                <span className="home-badge home-badge--solid-yellow">{section.data.badge}</span>
-              ) : null}
-              <h2 className="home-title home-title--light">{section.data.title}</h2>
-              {section.data.text ? (
-                <p className="home-text home-text--light">{section.data.text}</p>
-              ) : null}
-              {section.data.bullets.length ? (
-                <ul className="home-finance__list">
-                  {section.data.bullets.map((b) => (
-                    <li key={b}>{b}</li>
-                  ))}
-                </ul>
-              ) : null}
-              <div className="home-finance__actions">
-                <Cta link={section.data.link} className="home-btn" />
-              </div>
-            </div>
-            <div
-              className="home-finance__media"
-              style={
-                section.data.image_url
-                  ? {
-                      backgroundImage: `url(${section.data.image_url})`,
-                      backgroundSize: 'cover',
-                    }
-                  : undefined
-              }
-            />
-          </div>
-        </section>
-      )
+      return null
     case 'ref_articulos':
       return (
         <section className="home-section home-blog">
@@ -469,7 +426,7 @@ function SectionRenderer({
               <Cta link={section.data.link} className="home-blog__more" />
             </div>
             <div className="home-blog__grid">
-              {section.data.items.map((item) => (
+              {section.data.items.slice(0, 3).map((item) => (
                 <a key={item.uuid} className="home-blog__card" href={item.url}>
                   <div
                     className="home-blog__media"
@@ -484,7 +441,7 @@ function SectionRenderer({
                   />
                   <h3>{item.title}</h3>
                   <p>{item.summary}</p>
-                  <span className="home-blog__cta">Leer artículo →</span>
+                  <span className="home-blog__cta">{t(locale, 'leerArticulo')} →</span>
                 </a>
               ))}
             </div>

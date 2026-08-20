@@ -50,6 +50,13 @@ export interface ArticleCard {
   image_url: string | null
 }
 
+/** Hero background slide: muted video (no controls) or image. */
+export interface HeroSlide {
+  type: 'video' | 'image'
+  url: string
+  poster_url?: string | null
+}
+
 export type HomeSection =
   | {
       type: 'hero'
@@ -58,7 +65,9 @@ export type HomeSection =
         title: string
         subtitle: string
         search_cta: HomeLink | null
+        /** Legacy single image; used when `slides` is empty. */
         image_url: string | null
+        slides?: HeroSlide[]
       }
     }
   | { type: 'kpi_strip'; data: { title: string; items: Array<{ value: string; label: string }> } }

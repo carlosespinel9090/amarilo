@@ -1,10 +1,11 @@
-import { useEffect, useRef, type ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import { Outlet, Route, Routes, useLocation, matchPath } from 'react-router-dom'
 import { Home } from './pages/Home'
 import { About } from './pages/About'
 import { ProyectoDetail } from './pages/ProyectoDetail'
 import { ProyectosList } from './pages/ProyectosList'
 import { NotFound } from './pages/NotFound'
+import { Perfilador } from './pages/Perfilador'
 import { UtilityBar } from './components/UtilityBar'
 import { Header } from './components/Header'
 import { Footer } from './components/Footer'
@@ -23,6 +24,7 @@ import './styles/layout/site-chrome.scss'
 /** Páginas con componente real, registradas bajo el slug de cada locale. */
 const PAGE_ROUTES: Array<{ key: RouteKey; element: ReactNode }> = [
   { key: 'about', element: <About /> },
+  { key: 'perfilador', element: <Perfilador /> },
 ]
 
 const LOCALE_ROOTS: Array<{ path: string; locale: Locale }> = [
@@ -56,30 +58,6 @@ function Shell({ locale }: { locale: Locale }) {
   const { layout, error } = useLayout(locale)
   const { pathname } = useLocation()
   const isDetail = isProyectoDetailPath(pathname)
-  const chromeRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (!isDetail) {
-      document.documentElement.style.removeProperty('--site-chrome-height')
-      return
-    }
-    const el = chromeRef.current
-    if (!el) return
-
-    const apply = () => {
-      document.documentElement.style.setProperty(
-        '--site-chrome-height',
-        `${Math.ceil(el.getBoundingClientRect().height)}px`,
-      )
-    }
-    apply()
-    const ro = new ResizeObserver(apply)
-    ro.observe(el)
-    return () => {
-      ro.disconnect()
-      document.documentElement.style.removeProperty('--site-chrome-height')
-    }
-  }, [isDetail, layout?.header, layout?.utility])
 
   return (
     <LocaleContext.Provider value={locale}>
@@ -88,10 +66,7 @@ function Shell({ locale }: { locale: Locale }) {
           <div
             className={`min-h-screen bg-white text-[#161616]${isDetail ? ' is-proyecto-detail' : ''}`}
           >
-            <div
-              ref={chromeRef}
-              className={`site-chrome${isDetail ? ' site-chrome--sticky' : ''}`}
-            >
+            <div className="site-chrome site-chrome--sticky">
               <UtilityBar links={layout?.utility ?? []} />
               {layout?.header ? (
                 <Header

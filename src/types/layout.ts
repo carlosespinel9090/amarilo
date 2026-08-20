@@ -27,6 +27,7 @@ export interface SiteLayout {
     brand: {
       title: string
       tagline: string
+      logo_url?: string | null
       social: LayoutSocial[]
     }
     columns: LayoutColumn[]

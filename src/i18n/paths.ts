@@ -10,6 +10,7 @@ export const ROUTE_SLUGS = {
   blog: { es: 'blog', en: 'blog', fr: 'blog' },
   financiacion: { es: 'financiacion', en: 'financing', fr: 'financement' },
   asistente: { es: 'asistente', en: 'assistant', fr: 'assistant' },
+  perfilador: { es: 'perfilador', en: 'profiler', fr: 'profileur' },
   herramientas: { es: 'herramientas', en: 'tools', fr: 'outils' },
   'conoce-amarilo': { es: 'conoce-amarilo', en: 'about-amarilo', fr: 'connaitre-amarilo' },
   about: { es: 'about', en: 'about', fr: 'a-propos' },

@@ -1,0 +1,13 @@
+@use '../base/variables' as vars;
+
+.proyecto-detail--vis {
+  .proyecto-detail__pill-tab.is-active {
+    background: vars.$color-brand-yellow;
+    border-color: vars.$color-brand-yellow;
+    color: vars.$color-brand-black;
+  }
+
+  .proyecto-detail__why-list li::before {
+    background: #7eb6d9;
+  }
+}

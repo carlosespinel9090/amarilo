@@ -1,0 +1,16 @@
+@use '../base/variables' as vars;
+
+.proyecto-detail--novis {
+  .proyecto-detail__pill-tab.is-active {
+    background: vars.$color-brand-yellow;
+    border-color: vars.$color-brand-yellow;
+  }
+
+  .proyecto-detail__interest-card {
+    border-color: #f0e2a0;
+  }
+
+  .proyecto-detail__amenidad-card:not(.has-image) {
+    background: #1f2a30;
+  }
+}

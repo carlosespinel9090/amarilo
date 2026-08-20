@@ -6,15 +6,19 @@ import {
   parseProyectoFilters,
   type ProyectoListFilters,
 } from '../../utils/proyectoFilters'
-import { formatPriceFull } from '../../utils/formatProyecto'
-import { proyectoImageUrl } from '../../utils/proyectoImage'
 import type { FilterOption, ProyectoCard } from '../../types/home'
 import { useLocale } from '../../i18n/LocaleContext'
-import { useCurrency } from '../../currency/CurrencyContext'
 import { localizedPath } from '../../i18n/config'
 import { t } from '../../i18n/ui'
+import { ProjectCardView } from '../../components/home/ProjectCard'
 import '../../styles/layout/home.scss'
 import '../../styles/layout/proyectos-list.scss'
+
+/** Common segmento labels used by Explora / tabs (API accepts name or tid). */
+const SEGMENTO_OPTIONS: FilterOption[] = [
+  { id: 'VIS', name: 'VIS' },
+  { id: 'Inversión', name: 'Inversión' },
+]
 
 const PAGE_SIZE = 12
 
@@ -52,53 +56,6 @@ function ControlledSelect({
         ))}
       </select>
     </div>
-  )
-}
-
-function ResultCard({ item }: { item: ProyectoCard }) {
-  const locale = useLocale()
-  const { currency } = useCurrency()
-  const premium = item.variant === 'premium'
-  const image = proyectoImageUrl(item.image_url)
-  const badges = [...(item.estado ? [item.estado] : []), ...item.segmentos].slice(0, 3)
-
-  return (
-    <article className={`project-card${premium ? ' project-card--premium' : ''}`}>
-      <div
-        className="project-card__media"
-        style={{ backgroundImage: `url(${image})`, backgroundSize: 'cover' }}
-      >
-        <div className="project-card__badges">
-          {badges.map((b) => (
-            <span key={b} className="project-card__badge">
-              {b}
-            </span>
-          ))}
-        </div>
-        <button type="button" className="project-card__fav" aria-label="Favorito" tabIndex={-1} />
-      </div>
-      <div className="project-card__body">
-        <h3 className="project-card__title">{item.title}</h3>
-        <p className="project-card__meta">{item.ciudad || 'Colombia'}</p>
-        <p className="project-card__price">{formatPriceFull(item, currency)}</p>
-        <ul className="project-card__specs">
-          {item.amenities.slice(0, 3).map((a) => (
-            <li key={a}>{a}</li>
-          ))}
-        </ul>
-        <div className="project-card__actions">
-          <Link
-            className={`home-btn${premium ? '' : ' home-btn--dark'}`}
-            to={localizedPath(item.url || '/', locale)}
-          >
-            {t(locale, 'verProyecto')}
-          </Link>
-          <button type="button" className="home-btn home-btn--outline">
-            {t(locale, 'comparar')}
-          </button>
-        </div>
-      </div>
-    </article>
   )
 }
 
@@ -226,6 +183,15 @@ export function ProyectosList() {
     presupuestos: [],
   }
 
+  const segmentoOptions = useMemo(() => {
+    const current = (draft.segmento ?? urlFilters.segmento ?? '').trim()
+    if (!current) return SEGMENTO_OPTIONS
+    if (SEGMENTO_OPTIONS.some((o) => String(o.id) === current || o.name === current)) {
+      return SEGMENTO_OPTIONS
+    }
+    return [{ id: current, name: current }, ...SEGMENTO_OPTIONS]
+  }, [draft.segmento, urlFilters.segmento])
+
   const total = data?.pager.total ?? 0
   const pages = data?.pager.pages ?? 0
   const canLoadMore = page < pages
@@ -253,6 +219,15 @@ export function ProyectosList() {
               options={filterOpts.tipos}
               value={draft.tipo ?? ''}
               emptyLabel={t(locale, 'todosTipos')}
+              onChange={onBarChange}
+            />
+            <ControlledSelect
+              className="home-search__field"
+              label={t(locale, 'filtroSegmento')}
+              name="segmento"
+              options={segmentoOptions}
+              value={draft.segmento ?? ''}
+              emptyLabel={t(locale, 'todosSegmentos')}
               onChange={onBarChange}
             />
             <ControlledSelect
@@ -325,6 +300,14 @@ export function ProyectosList() {
               onChange={onBarChange}
             />
             <ControlledSelect
+              label={t(locale, 'filtroSegmento')}
+              name="segmento"
+              options={segmentoOptions}
+              value={draft.segmento ?? ''}
+              emptyLabel={t(locale, 'todosSegmentos')}
+              onChange={onBarChange}
+            />
+            <ControlledSelect
               label={t(locale, 'filtroEtapa')}
               name="etapa"
               options={filterOpts.etapas}
@@ -382,7 +365,7 @@ export function ProyectosList() {
 
           <div className="proyectos-list__grid">
             {items.map((item) => (
-              <ResultCard key={item.uuid} item={item} />
+              <ProjectCardView key={item.uuid} item={item} priceMode="full" />
             ))}
           </div>
 

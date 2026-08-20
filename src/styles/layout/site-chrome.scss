@@ -4,3 +4,8 @@
   z-index: 50;
   background: #fff;
 }
+
+/* El chrome sticky ya fija utility + header; evita doble sticky del header. */
+.site-chrome--sticky .site-header {
+  position: static;
+}
