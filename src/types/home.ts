@@ -33,6 +33,9 @@ export interface ProyectoCard {
   hab_min: number | null
   hab_max: number | null
   banos: number | null
+  torres?: number | null
+  unidades?: number | null
+  parqueadero?: string | null
   image_url: string | null
   variant: 'default' | 'premium' | string
 }

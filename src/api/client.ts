@@ -2,11 +2,12 @@ import axios from 'axios'
 import { store } from '../store'
 import { logout } from '../store/authSlice'
 import { getApiLang } from '../i18n/apiLang'
+import { resolveApiBaseUrl, setApiBaseUrlFallback } from '../i18n/apiBaseUrl'
+
+setApiBaseUrlFallback(import.meta.env.VITE_API_BASE_URL)
 
 export const apiClient = axios.create({
-  baseURL:
-    import.meta.env.VITE_API_BASE_URL ||
-    'https://dev-stage-amarilo.pantheonsite.io/api',
+  baseURL: resolveApiBaseUrl(),
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
@@ -14,6 +15,9 @@ export const apiClient = axios.create({
 })
 
 apiClient.interceptors.request.use((config) => {
+  // Keep baseURL in sync with env / resolveApiBaseUrl().
+  config.baseURL = resolveApiBaseUrl()
+
   const rawToken = store.getState().auth.token ?? import.meta.env.VITE_JWT_TOKEN
   const token =
     rawToken && !['', 'none', '-', 'null', 'undefined'].includes(String(rawToken).trim())

@@ -89,11 +89,17 @@ export function formatSpecs(item: {
   hab_min: number | null
   hab_max: number | null
   banos: number | null
+  torres?: number | null
+  unidades?: number | null
+  parqueadero?: string | null
 }): string {
   const parts: string[] = []
   if (item.area_m2 != null) parts.push(`${Math.round(item.area_m2)} m² área`)
   const hab = formatHabRange(item.hab_min, item.hab_max)
   if (hab) parts.push(hab)
   if (item.banos != null) parts.push(`${item.banos} Baños`)
+  if (item.torres != null) parts.push(`${item.torres} Torres`)
+  if (item.unidades != null) parts.push(`${item.unidades} Unidades`)
+  if (item.parqueadero) parts.push(`Parqueadero: ${item.parqueadero}`)
   return parts.join(' - ')
 }

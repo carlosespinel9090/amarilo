@@ -4,6 +4,7 @@ import { useLocale } from '../../i18n/LocaleContext'
 import { useCurrency } from '../../currency/CurrencyContext'
 import { localizedPath } from '../../i18n/config'
 import { pathFor } from '../../i18n/paths'
+import { t } from '../../i18n/ui'
 import { formatPriceCompact } from '../../utils/formatProyecto'
 import { proyectoImageUrl } from '../../utils/proyectoImage'
 import { buildProyectoQuery, parseProyectoFilters } from '../../utils/proyectoFilters'
@@ -198,6 +199,18 @@ function SectionHero({
             defaultLabel="Todos"
           />
           <SelectField label="Etapa" name="etapa" options={filters.etapas} defaultLabel="Todas" />
+          <SelectField
+            label={t(locale, 'filtroHab')}
+            name="hab"
+            options={[
+              { id: '1', name: '1' },
+              { id: '2', name: '2' },
+              { id: '3', name: '3' },
+              { id: '4', name: '4' },
+              { id: '5', name: '5+' },
+            ]}
+            defaultLabel={t(locale, 'todasHab')}
+          />
           <button type="submit" className="home-search__submit" aria-label="Buscar" />
         </form>
       </div>

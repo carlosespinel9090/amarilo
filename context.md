@@ -13,6 +13,10 @@ React 19 · Vite · TS · pnpm · Tailwind · Redux · axios
 - Selector: `LanguageSwitcher`
 - Strings no-CMS: `src/i18n/ui.ts`
 
+## API
+
+- Default: `https://stage-amarilo.ddev.site/api` vía `resolveApiBaseUrl()` / `VITE_API_BASE_URL`.
+
 ## Arranque
 
 ```bash

@@ -2,7 +2,7 @@ import type { Locale } from '../i18n/config'
 import { pathFor } from '../i18n/paths'
 
 /** Query keys shared by Home hero ↔ listado ↔ GET /api/proyectos */
-export const PROYECTO_FILTER_KEYS = ['ciudad', 'tipo', 'presupuesto', 'etapa'] as const
+export const PROYECTO_FILTER_KEYS = ['ciudad', 'tipo', 'presupuesto', 'etapa', 'hab'] as const
 
 export type ProyectoFilterKey = (typeof PROYECTO_FILTER_KEYS)[number]
 

@@ -150,7 +150,15 @@ export function ProyectosList() {
       setError(null)
     }
 
-    fetchProyectos({ ...urlFilters, page: String(page), limit: String(PAGE_SIZE) }, locale)
+    const listFilters: ProyectoListFilters = {
+      ...urlFilters,
+      limit: String(PAGE_SIZE),
+    }
+    if (page > 1) {
+      listFilters.page = String(page)
+    }
+
+    fetchProyectos(listFilters, locale)
       .then((payload) => {
         if (!mounted) return
         setData(payload)
@@ -265,6 +273,21 @@ export function ProyectosList() {
               emptyLabel={t(locale, 'todasEtapas')}
               onChange={onBarChange}
             />
+            <ControlledSelect
+              className="home-search__field"
+              label={t(locale, 'filtroHab')}
+              name="hab"
+              options={[
+                { id: '1', name: '1' },
+                { id: '2', name: '2' },
+                { id: '3', name: '3' },
+                { id: '4', name: '4' },
+                { id: '5', name: '5' },
+              ]}
+              value={draft.hab ?? ''}
+              emptyLabel={t(locale, 'todasHab')}
+              onChange={onBarChange}
+            />
             <button type="submit" className="home-search__submit" aria-label={t(locale, 'buscar')} />
           </form>
         </div>
@@ -307,6 +330,20 @@ export function ProyectosList() {
               options={filterOpts.etapas}
               value={draft.etapa ?? ''}
               emptyLabel={t(locale, 'todasEtapas')}
+              onChange={onBarChange}
+            />
+            <ControlledSelect
+              label={t(locale, 'filtroHab')}
+              name="hab"
+              options={[
+                { id: '1', name: '1' },
+                { id: '2', name: '2' },
+                { id: '3', name: '3' },
+                { id: '4', name: '4' },
+                { id: '5', name: '5' },
+              ]}
+              value={draft.hab ?? ''}
+              emptyLabel={t(locale, 'todasHab')}
               onChange={onBarChange}
             />
 

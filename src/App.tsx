@@ -1,5 +1,5 @@
-import { useEffect, type ReactNode } from 'react'
-import { Outlet, Route, Routes } from 'react-router-dom'
+import { useEffect, useRef, type ReactNode } from 'react'
+import { Outlet, Route, Routes, useLocation, matchPath } from 'react-router-dom'
 import { Home } from './pages/Home'
 import { About } from './pages/About'
 import { ProyectoDetail } from './pages/ProyectoDetail'
@@ -17,6 +17,8 @@ import { setApiLang } from './i18n/apiLang'
 import { t } from './i18n/ui'
 import { CurrencyProvider } from './currency/CurrencyContext'
 import { AlternateUrlsProvider } from './i18n/AlternateUrlsContext'
+import { SalesIqWidget } from './components/SalesIqWidget/SalesIqWidget'
+import './styles/layout/site-chrome.scss'
 
 /** Páginas con componente real, registradas bajo el slug de cada locale. */
 const PAGE_ROUTES: Array<{ key: RouteKey; element: ReactNode }> = [
@@ -31,6 +33,18 @@ const LOCALE_ROOTS: Array<{ path: string; locale: Locale }> = [
   })),
 ]
 
+function isProyectoDetailPath(pathname: string): boolean {
+  for (const locale of LOCALES) {
+    const base = ROUTE_SLUGS.proyectos[locale]
+    const pattern =
+      locale === DEFAULT_LOCALE ? `/${base}/:slug` : `/${locale}/${base}/:slug`
+    if (matchPath({ path: pattern, end: true }, pathname)) {
+      return true
+    }
+  }
+  return false
+}
+
 function Shell({ locale }: { locale: Locale }) {
   // Sync before child effects fetch (module-level api lang).
   setApiLang(locale)
@@ -40,27 +54,61 @@ function Shell({ locale }: { locale: Locale }) {
   }, [locale])
 
   const { layout, error } = useLayout(locale)
+  const { pathname } = useLocation()
+  const isDetail = isProyectoDetailPath(pathname)
+  const chromeRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!isDetail) {
+      document.documentElement.style.removeProperty('--site-chrome-height')
+      return
+    }
+    const el = chromeRef.current
+    if (!el) return
+
+    const apply = () => {
+      document.documentElement.style.setProperty(
+        '--site-chrome-height',
+        `${Math.ceil(el.getBoundingClientRect().height)}px`,
+      )
+    }
+    apply()
+    const ro = new ResizeObserver(apply)
+    ro.observe(el)
+    return () => {
+      ro.disconnect()
+      document.documentElement.style.removeProperty('--site-chrome-height')
+    }
+  }, [isDetail, layout?.header, layout?.utility])
 
   return (
     <LocaleContext.Provider value={locale}>
       <CurrencyProvider>
         <AlternateUrlsProvider>
-          <div className="min-h-screen bg-white text-[#161616]">
-            <UtilityBar links={layout?.utility ?? []} />
-            {layout?.header ? (
-              <Header
-                logoAlt={layout.header.logo_alt}
-                logoUrl={layout.header.logo_url}
-                menu={layout.header.menu}
-                cta={layout.header.cta}
-              />
-            ) : null}
+          <div
+            className={`min-h-screen bg-white text-[#161616]${isDetail ? ' is-proyecto-detail' : ''}`}
+          >
+            <div
+              ref={chromeRef}
+              className={`site-chrome${isDetail ? ' site-chrome--sticky' : ''}`}
+            >
+              <UtilityBar links={layout?.utility ?? []} />
+              {layout?.header ? (
+                <Header
+                  logoAlt={layout.header.logo_alt}
+                  logoUrl={layout.header.logo_url}
+                  menu={layout.header.menu}
+                  cta={layout.header.cta}
+                />
+              ) : null}
+            </div>
 
             <main>
               <Outlet />
             </main>
 
             <Footer data={layout?.footer ?? null} error={error ? t(locale, 'layoutError') : null} />
+            <SalesIqWidget />
           </div>
         </AlternateUrlsProvider>
       </CurrencyProvider>
