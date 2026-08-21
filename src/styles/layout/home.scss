@@ -896,7 +896,8 @@
   justify-content: center;
   margin-bottom: 16px;
 
-  img {
+  img,
+  svg {
     width: 24px;
     height: 24px;
     object-fit: contain;
@@ -976,6 +977,7 @@
 
   @media (min-width: vars.$breakpoint-lg) {
     grid-template-columns: 1fr 1fr;
+    gap: 48px;
   }
 }
 
@@ -989,7 +991,7 @@
 .home-assistant__panel {
   //background: #fff;
   border-radius: 20px;
-  //padding: 36px 32px;
+  padding: 32px 0 30px;
 
   .home-title {
     font-size: 28px;
@@ -1000,13 +1002,23 @@
     font-size: 18px;
     line-height: 28.8px;
     color: #161616;
-    font-weight: 400px;
+    font-weight: 400;
   }
-
+  .home-assistant__actions {
+    margin-top: 28px;
+  }
+  .home-btn {
+    font-size: 15px;
+    padding: 10px 28px;
+    font-weight: 600;
+    &--outline {
+      border: none;
+    }
+  }
 }
 
 .home-assistant__list {
-  margin: 14px 0 0;
+  margin: 20px 0 0;
   padding: 0;
   list-style: none;
 
