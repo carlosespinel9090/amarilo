@@ -219,58 +219,28 @@ export function ProyectosList() {
   return (
     <div className="proyectos-list">
       <section className="proyectos-list__hero">
-        <div className="proyectos-list__hero-bg" aria-hidden />
-        <div className="proyectos-list__hero-blob proyectos-list__hero-blob--left" aria-hidden />
-        <div className="proyectos-list__hero-blob proyectos-list__hero-blob--right" aria-hidden />
+        <div className="proyectos-list__hero-bg" aria-hidden>
+          <img
+            className="proyectos-list__hero-media"
+            src="/images/proyectos-header-slider.jpg"
+            alt=""
+            width={1920}
+            height={448}
+          />
+        </div>
         <div className="home-container proyectos-list__hero-inner">
           <h1 className="proyectos-list__hero-title">{t(locale, 'exploraOferta')}</h1>
           <p className="proyectos-list__hero-sub">{t(locale, 'exploraOfertaSub')}</p>
+          <div className="proyectos-list__hero-dots" aria-hidden>
+            <span className="is-active" />
+            <span />
+            <span />
+          </div>
         </div>
       </section>
 
-      <div className="home-container proyectos-list__search-wrap">
-        <form className="home-search proyectos-list__bar" onSubmit={submitBar}>
-          <ControlledSelect
-            className="home-search__field"
-            label={t(locale, 'filtroCiudad')}
-            name="ciudad"
-            options={filterOpts.ciudades}
-            value={draft.ciudad ?? ''}
-            emptyLabel={t(locale, 'todasCiudades')}
-            onChange={onBarChange}
-          />
-          <ControlledSelect
-            className="home-search__field"
-            label={t(locale, 'filtroTipo')}
-            name="tipo"
-            options={filterOpts.tipos}
-            value={draft.tipo ?? ''}
-            emptyLabel={t(locale, 'todosTipos')}
-            onChange={onBarChange}
-          />
-          <ControlledSelect
-            className="home-search__field"
-            label={t(locale, 'filtroPresupuesto')}
-            name="presupuesto"
-            options={filterOpts.presupuestos}
-            value={draft.presupuesto ?? ''}
-            emptyLabel={t(locale, 'todosPresupuestos')}
-            onChange={onBarChange}
-          />
-          <ControlledSelect
-            className="home-search__field"
-            label={t(locale, 'filtroEtapa')}
-            name="etapa"
-            options={filterOpts.etapas}
-            value={draft.etapa ?? ''}
-            emptyLabel={t(locale, 'todasEtapas')}
-            onChange={onBarChange}
-          />
-          <button type="submit" className="home-search__submit" aria-label={t(locale, 'buscar')} />
-        </form>
-      </div>
-
-      <div className="home-container proyectos-list__body">
+      {/* Figma Results-Container: Sidebar 280 + gap 40 + col (search → gap 64 → results) */}
+      <div className="proyectos-list__shell proyectos-list__body">
         <aside className="proyectos-list__sidebar">
           <h2 className="proyectos-list__sidebar-title">
             <span className="proyectos-list__sidebar-dot" aria-hidden />
@@ -411,16 +381,18 @@ export function ProyectosList() {
               onChange={onBarChange}
             />
 
-            <button type="submit" className="home-btn proyectos-list__apply">
-              {t(locale, 'aplicarFiltros')}
-            </button>
-            <button type="button" className="proyectos-list__clear" onClick={clearFilters}>
-              {t(locale, 'limpiarFiltros')}
-            </button>
+            <div className="proyectos-list__sidebar-actions">
+              <button type="submit" className="home-btn proyectos-list__apply">
+                {t(locale, 'aplicarFiltros')}
+              </button>
+              <button type="button" className="proyectos-list__clear" onClick={clearFilters}>
+                {t(locale, 'limpiarFiltros')}
+              </button>
+            </div>
 
             <div className="proyectos-list__tip">
               <span className="proyectos-list__tip-icon" aria-hidden>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                   <path
                     d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5V15h8v-1.5A6 6 0 0 0 12 3Z"
                     stroke="currentColor"
@@ -435,51 +407,93 @@ export function ProyectosList() {
           </form>
         </aside>
 
-        <div className="proyectos-list__results">
-          <div className="proyectos-list__results-head">
-            <p className="proyectos-list__count">
-              <span className="proyectos-list__count-dot" aria-hidden />
-              {loading && page === 1
-                ? t(locale, 'loading')
-                : t(locale, 'proyectosEncontrados').replace('{n}', String(total))}
-            </p>
-            <label className="proyectos-list__sort">
-              <span>{t(locale, 'ordenarPor')}</span>
-              <select defaultValue="relevancia" aria-label={t(locale, 'ordenarPor')}>
-                <option value="relevancia">{t(locale, 'relevancia')}</option>
-              </select>
-            </label>
-          </div>
+        <div className="proyectos-list__main">
+          <form className="home-search proyectos-list__bar" onSubmit={submitBar}>
+            <ControlledSelect
+              className="home-search__field"
+              label={t(locale, 'filtroCiudad')}
+              name="ciudad"
+              options={filterOpts.ciudades}
+              value={draft.ciudad ?? ''}
+              emptyLabel={t(locale, 'todasCiudades')}
+              onChange={onBarChange}
+            />
+            <ControlledSelect
+              className="home-search__field"
+              label={t(locale, 'filtroTipo')}
+              name="tipo"
+              options={filterOpts.tipos}
+              value={draft.tipo ?? ''}
+              emptyLabel={t(locale, 'todosTipos')}
+              onChange={onBarChange}
+            />
+            <ControlledSelect
+              className="home-search__field"
+              label={t(locale, 'filtroPresupuesto')}
+              name="presupuesto"
+              options={filterOpts.presupuestos}
+              value={draft.presupuesto ?? ''}
+              emptyLabel={t(locale, 'todosPresupuestos')}
+              onChange={onBarChange}
+            />
+            <ControlledSelect
+              className="home-search__field"
+              label={t(locale, 'filtroEtapa')}
+              name="etapa"
+              options={filterOpts.etapas}
+              value={draft.etapa ?? ''}
+              emptyLabel={t(locale, 'todasEtapas')}
+              onChange={onBarChange}
+            />
+            <button type="submit" className="home-search__submit" aria-label={t(locale, 'buscar')} />
+          </form>
 
-          {error ? <p className="proyectos-list__error">{error}</p> : null}
-
-          {!loading && !error && items.length === 0 ? (
-            <p className="proyectos-list__empty">{t(locale, 'sinProyectos')}</p>
-          ) : null}
-
-          <div className="proyectos-list__grid">
-            {items.map((item) => (
-              <ProjectCardView key={item.uuid} item={item} priceMode="full" />
-            ))}
-          </div>
-
-          {canLoadMore ? (
-            <div className="proyectos-list__more">
-              <button
-                type="button"
-                className="home-btn home-btn--outline"
-                disabled={loadingMore}
-                onClick={() => setPage((p) => p + 1)}
-              >
-                {loadingMore ? t(locale, 'loading') : t(locale, 'cargarMas')}
-              </button>
+          <div className="proyectos-list__results">
+            <div className="proyectos-list__results-head">
+              <p className="proyectos-list__count">
+                <span className="proyectos-list__count-dot" aria-hidden />
+                {loading && page === 1
+                  ? t(locale, 'loading')
+                  : t(locale, 'proyectosEncontrados').replace('{n}', String(total))}
+              </p>
+              <label className="proyectos-list__sort">
+                <span>{t(locale, 'ordenarPor')}</span>
+                <select defaultValue="relevancia" aria-label={t(locale, 'ordenarPor')}>
+                  <option value="relevancia">{t(locale, 'relevancia')}</option>
+                </select>
+              </label>
             </div>
-          ) : null}
+
+            {error ? <p className="proyectos-list__error">{error}</p> : null}
+
+            {!loading && !error && items.length === 0 ? (
+              <p className="proyectos-list__empty">{t(locale, 'sinProyectos')}</p>
+            ) : null}
+
+            <div className="proyectos-list__grid">
+              {items.map((item) => (
+                <ProjectCardView key={item.uuid} item={item} priceMode="full" />
+              ))}
+            </div>
+
+            {canLoadMore ? (
+              <div className="proyectos-list__more">
+                <button
+                  type="button"
+                  className="home-btn home-btn--outline"
+                  disabled={loadingMore}
+                  onClick={() => setPage((p) => p + 1)}
+                >
+                  {loadingMore ? t(locale, 'loading') : t(locale, 'cargarMas')}
+                </button>
+              </div>
+            ) : null}
+          </div>
         </div>
       </div>
 
       <section className="proyectos-list__cta">
-        <div className="home-container">
+        <div className="proyectos-list__shell">
           <div className="proyectos-list__cta-box">
             <div className="proyectos-list__cta-blob" aria-hidden />
             <div className="proyectos-list__cta-copy">
