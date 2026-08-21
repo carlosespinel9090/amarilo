@@ -9,6 +9,7 @@ import { proyectoImageUrl } from '../../utils/proyectoImage'
 import { buildProyectoQuery, parseProyectoFilters } from '../../utils/proyectoFilters'
 import { HeroMediaSlider } from './HeroMediaSlider'
 import { ProjectTabsSection } from './ProjectTabsSection'
+import novedadesBlobImg from '../../assets/images/icon-bg.png'
 import '../../styles/layout/home.scss'
 
 /** Rewrite legacy teaser targets to the Perfilador wizard. */
@@ -231,7 +232,9 @@ function NovedadesCarousel({
 
   return (
     <section className="home-section home-novedades">
-      <div className="home-novedades__blob" aria-hidden />
+      <div className="home-novedades__blob" aria-hidden>
+        <img src={novedadesBlobImg} alt="" />
+      </div>
       <div className="home-container">
         <div className="home-novedades__head">
           {data.badge ? (
