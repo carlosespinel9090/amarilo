@@ -49,6 +49,7 @@ export interface ArticleCard {
   summary: string
   created: number
   image_url: string | null
+  badge?: string | null
 }
 
 /** Hero background slide: muted video (no controls) or image. */
@@ -95,7 +96,13 @@ export type HomeSection = WithSectionBackground<
     }
   | {
       type: 'ref_proyectos_ciudad'
-      data: { badge: string; title: string; text: string; items: ProyectoCard[] }
+      data: {
+        badge: string
+        title: string
+        text: string
+        slides?: HeroSlide[]
+        items: ProyectoCard[]
+      }
     }
   | {
       type: 'beneficios'
@@ -160,7 +167,13 @@ export type HomeSection = WithSectionBackground<
     }
   | {
       type: 'ref_articulos'
-      data: { badge: string; title: string; link: HomeLink | null; items: ArticleCard[] }
+      data: {
+        badge: string
+        title: string
+        text?: string
+        link: HomeLink | null
+        items: ArticleCard[]
+      }
     }
   | {
       type: 'texto_cta'

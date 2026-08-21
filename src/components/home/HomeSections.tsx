@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { useEffect, useState, type HTMLAttributes, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type HTMLAttributes, type ReactNode } from 'react'
 import type {
   FilterOption,
   HomeLink,
@@ -281,20 +281,59 @@ function NovedadesCarousel({
 }) {
   const locale = useLocale()
   const [index, setIndex] = useState(0)
-  const items = data.items
+  const [playing, setPlaying] = useState(false)
+  const videoRef = useRef<HTMLVideoElement | null>(null)
+
+  const mediaSlides = useMemo(() => {
+    const fromCms = (data.slides || []).filter((s) => s.url)
+    if (fromCms.length) return fromCms
+    return (data.items || [])
+      .map((item) => {
+        const url = proyectoImageUrl(item.image_url)
+        return url ? ({ type: 'image' as const, url }) : null
+      })
+      .filter((s): s is { type: 'image'; url: string } => Boolean(s))
+  }, [data.slides, data.items])
+
+  const projectFallback = !data.slides?.length && data.items?.length
 
   useEffect(() => {
     setIndex(0)
-  }, [items])
+    setPlaying(false)
+  }, [mediaSlides])
 
-  if (!items.length) return null
+  useEffect(() => {
+    setPlaying(false)
+    const el = videoRef.current
+    if (el) {
+      el.pause()
+      el.currentTime = 0
+    }
+  }, [index])
 
-  const current = items[Math.min(index, items.length - 1)] as ProyectoCard
-  const image = proyectoImageUrl(current.image_url)
-  const multi = items.length > 1
+  if (!mediaSlides.length && !projectFallback) return null
+
+  const slides = mediaSlides
+  const current = slides[Math.min(index, Math.max(slides.length - 1, 0))]
+  const multi = slides.length > 1
+  const project = projectFallback
+    ? data.items[Math.min(index, data.items.length - 1)]
+    : null
 
   const go = (dir: -1 | 1) => {
-    setIndex((i) => (i + dir + items.length) % items.length)
+    setIndex((i) => (i + dir + slides.length) % slides.length)
+  }
+
+  const togglePlay = () => {
+    const el = videoRef.current
+    if (!el || current?.type !== 'video') return
+    if (el.paused) {
+      el.play().catch(() => {})
+      setPlaying(true)
+    } else {
+      el.pause()
+      setPlaying(false)
+    }
   }
 
   return (
@@ -319,19 +358,52 @@ function NovedadesCarousel({
               onClick={() => go(-1)}
             />
           ) : null}
-          <Link
-            className="home-novedades__slide"
-            to={localizedPath(current.url || '/', locale)}
-            style={{
-              backgroundImage: `linear-gradient(180deg, rgba(22,22,22,0.05) 40%, rgba(22,22,22,0.55) 100%), url(${image})`,
-            }}
-          >
-            <div className="home-novedades__caption">
-              <h3>{current.title}</h3>
-              {current.ciudad ? <p>{current.ciudad}</p> : null}
-              <span className="home-novedades__cta">{t(locale, 'verProyecto')} →</span>
+          {projectFallback && project ? (
+            <Link
+              className="home-novedades__slide"
+              to={localizedPath(project.url || '/', locale)}
+              style={{
+                backgroundImage: `linear-gradient(180deg, rgba(22,22,22,0.05) 40%, rgba(22,22,22,0.55) 100%), url(${proyectoImageUrl(project.image_url)})`,
+              }}
+            >
+              <div className="home-novedades__caption">
+                <h3>{project.title}</h3>
+                {project.ciudad ? <p>{project.ciudad}</p> : null}
+                <span className="home-novedades__cta">{t(locale, 'verProyecto')} →</span>
+              </div>
+            </Link>
+          ) : (
+            <div className="home-novedades__slide home-novedades__slide--media">
+              {current?.type === 'video' ? (
+                <>
+                  <video
+                    ref={videoRef}
+                    className="home-novedades__media"
+                    src={current.url}
+                    poster={current.poster_url || undefined}
+                    playsInline
+                    preload="metadata"
+                    onEnded={() => setPlaying(false)}
+                  />
+                  {!playing ? (
+                    <button
+                      type="button"
+                      className="home-novedades__play"
+                      aria-label={t(locale, 'verMas')}
+                      onClick={togglePlay}
+                    />
+                  ) : null}
+                </>
+              ) : (
+                <div
+                  className="home-novedades__media"
+                  style={{
+                    backgroundImage: current?.url ? `url(${current.url})` : undefined,
+                  }}
+                />
+              )}
             </div>
-          </Link>
+          )}
           {multi ? (
             <button
               type="button"
@@ -535,6 +607,7 @@ function SectionRenderer({
                   <span className="home-badge home-badge--yellow home-badge--solid-yellow">{section.data.badge}</span>
                 ) : null}
                 <h2 className="home-title">{section.data.title}</h2>
+                {section.data.text ? <p className="home-text">{section.data.text}</p> : null}
               </div>
               <Cta link={section.data.link} className="home-blog__more" />
             </div>
@@ -551,7 +624,9 @@ function SectionRenderer({
                           }
                         : undefined
                     }
-                  />
+                  >
+                    {item.badge ? <span className="home-blog__tag">{item.badge}</span> : null}
+                  </div>
                   <h3>{item.title}</h3>
                   <p>{item.summary}</p>
                   <span className="home-blog__cta">{t(locale, 'leerArticulo')} →</span>
