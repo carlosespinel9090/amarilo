@@ -38,7 +38,7 @@ function CheckIcon(props: SVGProps<SVGSVGElement>) {
 
 export function ProjectSteps() {
   return (
-    <section className="relative overflow-hidden bg-ink px-md py-2xl text-white">
+    <section className="relative overflow-hidden  px-md py-2xl text-white">
 
       <div className="relative z-10 mx-auto grid max-w-6xl grid-cols-1 items-center gap-xl laptop:grid-cols-2">
         <div className="relative">
