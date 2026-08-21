@@ -16,6 +16,7 @@ export interface ProyectosListResponse {
     tipos: FilterOption[]
     etapas: FilterOption[]
     presupuestos: FilterOption[]
+    segmentos?: FilterOption[]
   }
   lang?: string
 }

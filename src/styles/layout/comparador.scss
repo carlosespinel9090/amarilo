@@ -10,14 +10,16 @@
 /* —— Hero —— */
 .comparador__hero {
   position: relative;
-  min-height: 260px;
-  padding: 72px 0 56px;
+  min-height: 320px;
+  padding: 0;
   color: #fff;
   overflow: hidden;
+  display: flex;
+  align-items: center;
 
   @media (min-width: vars.$breakpoint-md) {
-    min-height: 300px;
-    padding: 88px 0 64px;
+    height: vars.$layout-hero-height;
+    min-height: vars.$layout-hero-height;
   }
 }
 
@@ -34,6 +36,11 @@
   position: relative;
   z-index: 1;
   max-width: 640px;
+  padding: 56px 0 48px;
+
+  @media (min-width: vars.$breakpoint-md) {
+    padding: 84px 0 32px;
+  }
 }
 
 .comparador__hero-title {

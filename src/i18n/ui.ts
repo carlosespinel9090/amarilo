@@ -209,7 +209,7 @@ const messages = {
     comparar: 'Compare',
     exploraOferta: 'Explore the full Amarilo\noffering',
     exploraOfertaSub:
-      'Browse every option we have for you. Discover our full offering and find the right space for your next project.',
+      'Browse every option we have for you. Discover our full offering and find the ideal space for your next project.',
     filtroCiudad: 'City',
     filtroTipo: 'Type',
     filtroTipoInmueble: 'Property type',
@@ -238,7 +238,8 @@ const messages = {
     sinProyectos: 'No projects match these filters.',
     cargarMas: 'Load more projects',
     listoHogar: 'Ready to find your home?',
-    listoHogarSub: 'Leave your details and an advisor will guide the next step.',
+    listoHogarSub:
+      'Leave your details and an advisor will contact you within 24 hours — no commitment.',
     quieroContactoCta: 'I want to be contacted',
     whatsappCta: 'WhatsApp',
     filtroHab: 'Bedrooms',
@@ -410,7 +411,8 @@ const messages = {
     sinProyectos: 'Aucun projet ne correspond à ces filtres.',
     cargarMas: 'Charger plus de projets',
     listoHogar: 'Prêt à trouver votre foyer ?',
-    listoHogarSub: 'Laissez vos coordonnées et un conseiller vous accompagne.',
+    listoHogarSub:
+      'Laissez vos coordonnées et un conseiller vous contacte en moins de 24 heures — sans engagement.',
     quieroContactoCta: 'Je veux être contacté',
     whatsappCta: 'WhatsApp',
     filtroHab: 'Chambres',

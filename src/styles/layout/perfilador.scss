@@ -15,7 +15,8 @@
 /* —— Hero (pasos 1–2) —— */
 .perfilador__hero {
   position: relative;
-  min-height: 280px;
+  min-height: 320px;
+  height: auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -23,7 +24,8 @@
   overflow: hidden;
 
   @media (min-width: vars.$breakpoint-md) {
-    min-height: 340px;
+    height: vars.$layout-hero-height;
+    min-height: vars.$layout-hero-height;
   }
 }
 

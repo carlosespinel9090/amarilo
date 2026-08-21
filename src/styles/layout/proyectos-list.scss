@@ -25,18 +25,18 @@ $pl-grid-row-gap: 56px;
   padding-right: vars.$layout-gutter;
 }
 
-/* —— Hero HEADER_Slider (1030:18170): 1920×448, content pad 84/32/32/32, gap 14.8 —— */
+/* —— Hero HEADER_Slider: 1920×448.39, content pad 84/32/32/32, gap 14.8 —— */
 .proyectos-list__hero {
   position: relative;
-  min-height: 360px;
+  min-height: 320px;
   padding: 0;
   background: vars.$color-brand-black;
   color: #fff;
   overflow: hidden;
 
   @media (min-width: vars.$breakpoint-md) {
-    height: 448px;
-    min-height: 448px;
+    height: vars.$layout-hero-height;
+    min-height: vars.$layout-hero-height;
   }
 }
 
@@ -44,16 +44,42 @@ $pl-grid-row-gap: 56px;
   position: absolute;
   inset: 0;
   z-index: 0;
-  background: #161616;
-  overflow: hidden;
-}
+  background-color: #161616;
+  background-image: url('/images/proyectos-header-slider.jpg');
+  background-position: center center;
+  background-repeat: no-repeat;
+  /* Fill exact hero box so side yellow blobs are not cropped by cover */
+  background-size: 100% 100%;
 
-.proyectos-list__hero-media {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
+  &--slider {
+    background-image: none;
+    overflow: hidden;
+  }
+
+  .home-hero__slider {
+    position: absolute;
+    inset: 0;
+  }
+
+  .home-hero__media {
+    object-fit: cover;
+  }
+
+  .home-hero__dots {
+    bottom: 32px;
+    gap: 5px;
+  }
+
+  .home-hero__dot {
+    width: 12px;
+    height: 12px;
+    background: #999;
+
+    &.is-active {
+      background: #fff;
+      transform: none;
+    }
+  }
 }
 
 .proyectos-list__hero-inner {
@@ -61,17 +87,18 @@ $pl-grid-row-gap: 56px;
   z-index: 2;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: flex-start;
   gap: 14.8px;
   box-sizing: border-box;
   max-width: vars.$layout-max;
-  min-height: 360px;
-  padding-top: 56px;
-  padding-bottom: 28px;
+  min-height: 320px;
+  padding-top: 48px;
+  padding-bottom: 64px;
 
   @media (min-width: vars.$breakpoint-md) {
     height: 100%;
-    min-height: 448px;
+    min-height: 0;
     padding-top: 84px;
     padding-bottom: 32px;
   }
@@ -79,8 +106,9 @@ $pl-grid-row-gap: 56px;
 
 .proyectos-list__hero-title {
   margin: 0;
-  max-width: 500px;
-  padding-top: 3px;
+  /* Figma text ≈ 500×89 inside Heading 1 540 — browser metrics need a bit more */
+  max-width: 560px;
+  padding-top: 3.2px;
   font-size: 32px;
   font-weight: 700;
   line-height: 1.18;
@@ -97,7 +125,6 @@ $pl-grid-row-gap: 56px;
 .proyectos-list__hero-sub {
   margin: 0;
   max-width: 554px;
-  padding-bottom: 20px;
   font-size: 16px;
   font-weight: 600;
   line-height: 1.55;
@@ -106,24 +133,6 @@ $pl-grid-row-gap: 56px;
   @media (min-width: vars.$breakpoint-md) {
     font-size: 18px;
     line-height: 28.8px;
-  }
-}
-
-.proyectos-list__hero-dots {
-  display: flex;
-  gap: 5px;
-  margin-top: auto;
-  padding: 10px;
-
-  span {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: #999;
-
-    &.is-active {
-      background: #fff;
-    }
   }
 }
 

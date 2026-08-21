@@ -1,18 +1,23 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { fetchProyectos, type ProyectosListResponse } from '../../utils/fetchProyectos'
+import { fetchLanding, landingHeroSection } from '../../utils/fetchLanding'
 import {
   buildProyectoQuery,
   parseProyectoFilters,
   type ProyectoListFilters,
 } from '../../utils/proyectoFilters'
-import type { FilterOption, ProyectoCard } from '../../types/home'
+import type { FilterOption, HeroSlide, ProyectoCard } from '../../types/home'
 import { useLocale } from '../../i18n/LocaleContext'
 import { localizedPath } from '../../i18n/config'
 import { t } from '../../i18n/ui'
 import { ProjectCardView } from '../../components/home/ProjectCard'
+import { HeroMediaSlider } from '../../components/home/HeroMediaSlider'
 import '../../styles/layout/home.scss'
 import '../../styles/layout/proyectos-list.scss'
+
+/** Landing slug for administrable /proyectos hero (Drupal alias /proyectos). */
+const PROYECTOS_LANDING_SLUG = 'proyectos'
 
 /** Common segmento labels used by Explora / tabs (API accepts name or tid). */
 const SEGMENTO_OPTIONS: FilterOption[] = [
@@ -104,10 +109,34 @@ export function ProyectosList() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
+  const [heroSlides, setHeroSlides] = useState<HeroSlide[] | undefined>(undefined)
+  const [heroImageUrl, setHeroImageUrl] = useState<string | null>(null)
+  const [heroTitle, setHeroTitle] = useState<string | null>(null)
+  const [heroSubtitle, setHeroSubtitle] = useState<string | null>(null)
 
   useEffect(() => {
     setDraft(urlFilters)
   }, [urlFilters])
+
+  useEffect(() => {
+    let mounted = true
+    fetchLanding(PROYECTOS_LANDING_SLUG, locale)
+      .then((landing) => {
+        if (!mounted) return
+        const hero = landingHeroSection(landing)
+        if (!hero) return
+        setHeroSlides(hero.data.slides)
+        setHeroImageUrl(hero.data.image_url)
+        setHeroTitle(hero.data.title?.trim() || null)
+        setHeroSubtitle(hero.data.subtitle?.trim() || null)
+      })
+      .catch(() => {
+        /* keep static / i18n fallback */
+      })
+    return () => {
+      mounted = false
+    }
+  }, [locale])
 
   useEffect(() => {
     const filtersChanged = lastFiltersKey.current !== filtersKey
@@ -201,41 +230,43 @@ export function ProyectosList() {
     tipos: [],
     etapas: [],
     presupuestos: [],
+    segmentos: [],
   }
 
   const segmentoOptions = useMemo(() => {
+    const fromApi = filterOpts.segmentos?.length ? filterOpts.segmentos : SEGMENTO_OPTIONS
     const current = (draft.segmento ?? urlFilters.segmento ?? '').trim()
-    if (!current) return SEGMENTO_OPTIONS
-    if (SEGMENTO_OPTIONS.some((o) => String(o.id) === current || o.name === current)) {
-      return SEGMENTO_OPTIONS
+    if (!current) return fromApi
+    if (fromApi.some((o) => String(o.id) === current || o.name === current)) {
+      return fromApi
     }
-    return [{ id: current, name: current }, ...SEGMENTO_OPTIONS]
-  }, [draft.segmento, urlFilters.segmento])
+    return [{ id: current, name: current }, ...fromApi]
+  }, [draft.segmento, urlFilters.segmento, filterOpts.segmentos])
 
   const total = data?.pager.total ?? 0
   const pages = data?.pager.pages ?? 0
   const canLoadMore = page < pages
+  const hasHeroMedia =
+    (heroSlides?.some((s) => Boolean(s.url)) ?? false) || Boolean(heroImageUrl)
 
   return (
     <div className="proyectos-list">
       <section className="proyectos-list__hero">
-        <div className="proyectos-list__hero-bg" aria-hidden>
-          <img
-            className="proyectos-list__hero-media"
-            src="/images/proyectos-header-slider.jpg"
-            alt=""
-            width={1920}
-            height={448}
-          />
+        <div
+          className={`proyectos-list__hero-bg${hasHeroMedia ? ' proyectos-list__hero-bg--slider' : ''}`}
+          aria-hidden={!hasHeroMedia}
+        >
+          {hasHeroMedia ? (
+            <HeroMediaSlider slides={heroSlides} imageUrl={heroImageUrl} />
+          ) : null}
         </div>
         <div className="home-container proyectos-list__hero-inner">
-          <h1 className="proyectos-list__hero-title">{t(locale, 'exploraOferta')}</h1>
-          <p className="proyectos-list__hero-sub">{t(locale, 'exploraOfertaSub')}</p>
-          <div className="proyectos-list__hero-dots" aria-hidden>
-            <span className="is-active" />
-            <span />
-            <span />
-          </div>
+          <h1 className="proyectos-list__hero-title">
+            {heroTitle ?? t(locale, 'exploraOferta')}
+          </h1>
+          <p className="proyectos-list__hero-sub">
+            {heroSubtitle ?? t(locale, 'exploraOfertaSub')}
+          </p>
         </div>
       </section>
 
