@@ -1,16 +1,55 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { useEffect, useState, type ReactNode } from 'react'
-import type { FilterOption, HomeLink, HomePayload, HomeSection, ProyectoCard } from '../../types/home'
+import { useEffect, useState, type HTMLAttributes, type ReactNode } from 'react'
+import type {
+  FilterOption,
+  HomeLink,
+  HomePayload,
+  HomeSection,
+  ProyectoCard,
+  SectionBackground,
+} from '../../types/home'
 import { useLocale } from '../../i18n/LocaleContext'
 import { localizedPath } from '../../i18n/config'
 import { pathFor } from '../../i18n/paths'
 import { t } from '../../i18n/ui'
 import { proyectoImageUrl } from '../../utils/proyectoImage'
 import { buildProyectoQuery, parseProyectoFilters } from '../../utils/proyectoFilters'
+import {
+  SectionBackgroundMedia,
+  sectionBackgroundClassName,
+  sectionBackgroundStyle,
+  sectionHasBackground,
+} from '../../utils/sectionBackground'
 import { HeroMediaSlider } from './HeroMediaSlider'
 import { ProjectTabsSection } from './ProjectTabsSection'
 import novedadesBlobImg from '../../assets/images/icon-bg.png'
 import '../../styles/layout/home.scss'
+
+function sectionClassName(...parts: Array<string | false | null | undefined>): string {
+  return parts.filter(Boolean).join(' ')
+}
+
+function SectionShell({
+  className,
+  background,
+  children,
+  ...rest
+}: {
+  className: string
+  background?: SectionBackground | null
+  children: ReactNode
+} & HTMLAttributes<HTMLElement>) {
+  return (
+    <section
+      className={sectionClassName('home-section', className, sectionBackgroundClassName(background))}
+      style={sectionBackgroundStyle(background)}
+      {...rest}
+    >
+      <SectionBackgroundMedia bg={background} />
+      {children}
+    </section>
+  )
+}
 
 /** Rewrite legacy teaser targets to the Perfilador wizard. */
 function resolveHomeCtaUrl(url: string): string {
@@ -129,17 +168,39 @@ function KpiValue({ value }: { value: string }) {
 function SectionHero({
   data,
   filters,
+  background,
 }: {
   data: Extract<HomeSection, { type: 'hero' }>['data']
   filters: HomePayload['filters']
+  background?: SectionBackground | null
 }) {
   const locale = useLocale()
   const navigate = useNavigate()
+  const hasSlides = Boolean(data.slides?.length || data.image_url)
+  const heroBg = !hasSlides && sectionHasBackground(background) ? background : null
+  let slides = data.slides
+  let imageUrl = data.image_url
+  if (heroBg?.mode === 'video' && heroBg.video_url) {
+    slides = [{ type: 'video', url: heroBg.video_url, poster_url: heroBg.poster_url }]
+  } else if (heroBg?.mode === 'image' && heroBg.image_url) {
+    imageUrl = heroBg.image_url
+  }
+
   return (
-    <section className="home-section home-hero">
+    <section
+      className={sectionClassName('home-section', 'home-hero', sectionBackgroundClassName(heroBg))}
+      style={heroBg?.mode === 'color' ? sectionBackgroundStyle(heroBg) : undefined}
+    >
       <div className="home-hero__media-shell">
-        <div className="home-hero__bg">
-          <HeroMediaSlider slides={data.slides} imageUrl={data.image_url} />
+        <div
+          className="home-hero__bg"
+          style={
+            heroBg?.mode === 'color' && heroBg.color
+              ? { background: heroBg.color }
+              : undefined
+          }
+        >
+          <HeroMediaSlider slides={slides} imageUrl={imageUrl} />
         </div>
         <div className="home-container home-hero__content">
           {data.badge ? (
@@ -213,8 +274,10 @@ function SectionHero({
 
 function NovedadesCarousel({
   data,
+  background,
 }: {
   data: Extract<HomeSection, { type: 'ref_proyectos_ciudad' }>['data']
+  background?: SectionBackground | null
 }) {
   const locale = useLocale()
   const [index, setIndex] = useState(0)
@@ -235,7 +298,7 @@ function NovedadesCarousel({
   }
 
   return (
-    <section className="home-section home-novedades">
+    <SectionShell className="home-novedades" background={background}>
       <div className="home-novedades__blob" aria-hidden>
         <img src={novedadesBlobImg} alt="" />
       </div>
@@ -279,7 +342,7 @@ function NovedadesCarousel({
           ) : null}
         </div>
       </div>
-    </section>
+    </SectionShell>
   )
 }
 
@@ -293,10 +356,12 @@ function SectionRenderer({
   const locale = useLocale()
   switch (section.type) {
     case 'hero':
-      return <SectionHero data={section.data} filters={filters} />
+      return (
+        <SectionHero data={section.data} filters={filters} background={section.background} />
+      )
     case 'kpi_strip':
       return (
-        <section className="home-section home-kpi">
+        <SectionShell className="home-kpi" background={section.background}>
           <div className="home-container home-kpi__grid">
             {section.data.items.map((item) => (
               <div key={`${item.value}-${item.label}`} data-aos="fade-up" data-aos-duration="1600">
@@ -307,7 +372,7 @@ function SectionRenderer({
               </div>
             ))}
           </div>
-        </section>
+        </SectionShell>
       )
     case 'ref_proyectos':
       return (
@@ -315,11 +380,12 @@ function SectionRenderer({
           data={section.data}
           ciudades={filters.ciudades}
           etapas={filters.etapas}
+          background={section.background}
         />
       )
     case 'beneficios':
       return (
-        <section className="home-section home-why">
+        <SectionShell className="home-why" background={section.background}>
           <div className="home-why__blobs" aria-hidden />
           <div className="home-container" data-aos="zoom-in" data-aos-duration="1600">
             {section.data.badge ? (
@@ -340,11 +406,11 @@ function SectionRenderer({
               ))}
             </div>
           </div>
-        </section>
+        </SectionShell>
       )
     case 'asistente_split':
       return (
-        <section className="home-section home-assistant">
+        <SectionShell className="home-assistant" background={section.background}>
           <div className="home-assistant__blob home-assistant__blob--left" aria-hidden />
           <div className="home-assistant__blob home-assistant__blob--right" aria-hidden />
           <div className="home-container home-assistant__grid">
@@ -379,11 +445,11 @@ function SectionRenderer({
               </div>
             </div>
           </div>
-        </section>
+        </SectionShell>
       )
     case 'split_cards':
       return (
-        <section className="home-section home-split">
+        <SectionShell className="home-split" background={section.background}>
           <div className="home-container">
             {section.data.title ? <h2 className="home-title">{section.data.title}</h2> : null}
             <div className="home-split__grid">
@@ -404,11 +470,16 @@ function SectionRenderer({
               ))}
             </div>
           </div>
-        </section>
+        </SectionShell>
       )
     case 'explora_necesidad':
       return (
-        <section className="home-section home-explore" data-aos="fade-up" data-aos-duration="1200">
+        <SectionShell
+          className="home-explore"
+          background={section.background}
+          data-aos="fade-up"
+          data-aos-duration="1200"
+        >
           <div className="home-container">
             {section.data.badge ? (
               <span className="home-badge home-badge--yellow home-badge--solid-yellow">{section.data.badge}</span>
@@ -443,15 +514,20 @@ function SectionRenderer({
               })}
             </div>
           </div>
-        </section>
+        </SectionShell>
       )
     case 'ref_proyectos_ciudad':
-      return <NovedadesCarousel data={section.data} />
+      return <NovedadesCarousel data={section.data} background={section.background} />
     case 'financiacion_split':
       return null
     case 'ref_articulos':
       return (
-        <section className="home-section home-blog" data-aos="fade-up" data-aos-duration="1400">
+        <SectionShell
+          className="home-blog"
+          background={section.background}
+          data-aos="fade-up"
+          data-aos-duration="1400"
+        >
           <div className="home-container">
             <div className="home-blog__head">
               <div>
@@ -483,11 +559,11 @@ function SectionRenderer({
               ))}
             </div>
           </div>
-        </section>
+        </SectionShell>
       )
     case 'texto_cta':
       return (
-        <section className="home-section home-final">
+        <SectionShell className="home-final" background={section.background}>
           <div className="home-container" data-aos="zoom-in" data-aos-duration="1600">
             <div className="home-final__box">
               <div className="home-final__blob home-final__blob--left" aria-hidden />
@@ -503,7 +579,7 @@ function SectionRenderer({
               </div>
             </div>
           </div>
-        </section>
+        </SectionShell>
       )
     default:
       return null

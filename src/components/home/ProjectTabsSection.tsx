@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import type { FilterOption, HomeSection, ProyectoCard } from '../../types/home'
+import type { FilterOption, HomeSection, ProyectoCard, SectionBackground } from '../../types/home'
 import { useLocale } from '../../i18n/LocaleContext'
 import { Link } from 'react-router-dom'
 import { t } from '../../i18n/ui'
@@ -11,6 +11,11 @@ import {
 import { useFavorites } from '../../hooks/useFavorites'
 import { ProjectCardView } from './ProjectCard'
 import { pathFor } from '../../i18n/paths'
+import {
+  SectionBackgroundMedia,
+  sectionBackgroundClassName,
+  sectionBackgroundStyle,
+} from '../../utils/sectionBackground'
 
 export type ProjectTabId =
   | 'destacados'
@@ -101,10 +106,12 @@ export function ProjectTabsSection({
   data,
   ciudades,
   etapas,
+  background,
 }: {
   data: Extract<HomeSection, { type: 'ref_proyectos' }>['data']
   ciudades: FilterOption[]
   etapas: FilterOption[]
+  background?: SectionBackground | null
 }) {
   const locale = useLocale()
   const { ids: favoriteIds, ready: favoritesReady } = useFavorites()
@@ -195,8 +202,13 @@ export function ProjectTabsSection({
     }
   }, [tab, ciudad, etapas, locale, favoriteIds, favoritesReady, data.items])
 
+  const bgClass = sectionBackgroundClassName(background)
   return (
-    <section className="home-section home-projects">
+    <section
+      className={['home-section', 'home-projects', bgClass].filter(Boolean).join(' ')}
+      style={sectionBackgroundStyle(background)}
+    >
+      <SectionBackgroundMedia bg={background} />
       <div className="home-container">
         <div
           className="home-projects__tabs"

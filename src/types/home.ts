@@ -58,7 +58,18 @@ export interface HeroSlide {
   poster_url?: string | null
 }
 
-export type HomeSection =
+/** Section-level administrable background (CMS field_bg_*). */
+export interface SectionBackground {
+  mode: 'color' | 'image' | 'video'
+  color?: string | null
+  image_url?: string | null
+  video_url?: string | null
+  poster_url?: string | null
+}
+
+type WithSectionBackground<T> = T & { background?: SectionBackground | null }
+
+export type HomeSection = WithSectionBackground<
   | {
       type: 'hero'
       data: {
@@ -161,6 +172,7 @@ export type HomeSection =
         secondary: HomeLink | null
       }
     }
+>
 
 export interface HomePayload {
   lang?: string

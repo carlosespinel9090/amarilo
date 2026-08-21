@@ -3,6 +3,58 @@
 .home-section {
   font-family: vars.$font-family-montserrat;
   color: vars.$color-brand-black;
+  position: relative;
+
+  &--has-bg {
+    // Beat hardcoded .home-kpi / .home-why / etc. backgrounds; inline style wins after.
+    &.home-kpi,
+    &.home-why,
+    &.home-assistant,
+    &.home-explore,
+    &.home-novedades,
+    &.home-projects,
+    &.home-blog,
+    &.home-final,
+    &.home-split {
+      background: none;
+    }
+
+    .home-why__blobs,
+    .home-assistant__blob,
+    .home-novedades__blob,
+    .home-final__blob {
+      display: none;
+    }
+
+    .home-final__box {
+      background: transparent;
+    }
+  }
+}
+
+.home-section__bg-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.home-section--has-bg > .home-container,
+.home-section--has-bg > .home-why__blobs + .home-container,
+.home-section--has-bg > [class*='__blob'] ~ .home-container,
+.home-section--has-bg > .home-assistant__blob ~ .home-container,
+.home-section--has-bg > .home-novedades__blob ~ .home-container {
+  position: relative;
+  z-index: 1;
+}
+
+// Ensure content stays above video bg for sections that put children as direct siblings.
+.home-section--has-bg > *:not(.home-section__bg-video) {
+  position: relative;
+  z-index: 1;
 }
 
 .home-container {
