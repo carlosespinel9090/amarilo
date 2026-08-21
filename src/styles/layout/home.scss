@@ -345,8 +345,8 @@
   border: 0;
   font-family: inherit;
   font-size: 15px;
-  font-weight: 500;
-  color: #7a8a95;
+  font-weight: 400;
+  color: #999999;
   line-height: 24px;
   outline: none;
   cursor: pointer;
@@ -424,7 +424,7 @@
 
 /* Projects */
 .home-projects {
-  padding: 28px 0 72px;
+  padding: 2px 0 72px;
 }
 
 .home-projects__tabs {
@@ -1098,6 +1098,7 @@
 
 /* Explora */
 .home-explore {
+  background: #F7F9FA;
   padding: 96px 0;
 
   .home-text {

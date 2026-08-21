@@ -152,7 +152,11 @@ function SectionHero({
           <p className="home-hero__subtitle">{data.subtitle}</p>
         </div>
       </div>
-      <div className="home-container home-hero__search-wrap">
+      <div
+        className="home-container home-hero__search-wrap"
+        data-aos="fade-up"
+        data-aos-duration="1300"
+      >
         <form
           className="home-search"
           onSubmit={(e) => {
@@ -235,7 +239,7 @@ function NovedadesCarousel({
       <div className="home-novedades__blob" aria-hidden>
         <img src={novedadesBlobImg} alt="" />
       </div>
-      <div className="home-container">
+      <div className="home-container" data-aos="fade-up" data-aos-duration="1600">
         <div className="home-novedades__head">
           {data.badge ? (
             <span className="home-badge home-badge--solid-yellow">{data.badge}</span>
@@ -295,7 +299,7 @@ function SectionRenderer({
         <section className="home-section home-kpi">
           <div className="home-container home-kpi__grid">
             {section.data.items.map((item) => (
-              <div key={`${item.value}-${item.label}`}>
+              <div key={`${item.value}-${item.label}`} data-aos="fade-up" data-aos-duration="1600">
                 <p className="home-kpi__value">
                   <KpiValue value={item.value} />
                 </p>
@@ -317,7 +321,7 @@ function SectionRenderer({
       return (
         <section className="home-section home-why">
           <div className="home-why__blobs" aria-hidden />
-          <div className="home-container">
+          <div className="home-container" data-aos="zoom-in" data-aos-duration="1600">
             {section.data.badge ? (
               <span className="home-badge home-badge--solid-yellow home-badge-yellow">{section.data.badge}</span>
             ) : null}
@@ -355,7 +359,7 @@ function SectionRenderer({
                   : undefined
               }
             />
-            <div className="home-assistant__panel">
+            <div className="home-assistant__panel" data-aos="zoom-in" data-aos-duration="1600">
               {section.data.badge ? (
                 <span className="home-badge home-badge--solid-yellow">{section.data.badge}</span>
               ) : null}
@@ -404,7 +408,7 @@ function SectionRenderer({
       )
     case 'explora_necesidad':
       return (
-        <section className="home-section home-explore">
+        <section className="home-section home-explore" data-aos="fade-up" data-aos-duration="1200">
           <div className="home-container">
             {section.data.badge ? (
               <span className="home-badge home-badge--yellow home-badge--solid-yellow">{section.data.badge}</span>
@@ -447,7 +451,7 @@ function SectionRenderer({
       return null
     case 'ref_articulos':
       return (
-        <section className="home-section home-blog">
+        <section className="home-section home-blog" data-aos="fade-up" data-aos-duration="1400">
           <div className="home-container">
             <div className="home-blog__head">
               <div>
@@ -484,7 +488,7 @@ function SectionRenderer({
     case 'texto_cta':
       return (
         <section className="home-section home-final">
-          <div className="home-container">
+          <div className="home-container" data-aos="zoom-in" data-aos-duration="1600">
             <div className="home-final__box">
               <div className="home-final__blob home-final__blob--left" aria-hidden />
               <div className="home-final__blob home-final__blob--right" aria-hidden />

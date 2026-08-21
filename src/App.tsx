@@ -20,6 +20,8 @@ import { t } from './i18n/ui'
 import { CurrencyProvider } from './currency/CurrencyContext'
 import { AlternateUrlsProvider } from './i18n/AlternateUrlsContext'
 import { SalesIqWidget } from './components/SalesIqWidget/SalesIqWidget'
+import AOS from 'aos'
+import 'aos/dist/aos.css'
 import './styles/layout/site-chrome.scss'
 
 /** Páginas con componente real, registradas bajo el slug de cada locale. */
@@ -94,6 +96,10 @@ function Shell({ locale }: { locale: Locale }) {
 }
 
 function App() {
+  useEffect(() => {
+    AOS.init({ duration: 700, once: true, offset: 80 })
+  }, [])
+
   return (
     <Routes>
       {/* Rutas explícitas /en y /fr: un /:lang genérico hacía que /proyectos

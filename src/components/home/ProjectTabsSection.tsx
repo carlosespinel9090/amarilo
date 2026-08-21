@@ -202,6 +202,7 @@ export function ProjectTabsSection({
           className="home-projects__tabs"
           role="tablist"
           aria-label={t(locale, 'nuestrosProyectos')}
+          data-aos="fade-up" data-aos-duration="1800"
         >
           {TABS.map((id) => (
             <button
@@ -219,7 +220,7 @@ export function ProjectTabsSection({
           ))}
         </div>
 
-        <div className="home-projects__head">
+        <div className="home-projects__head" data-aos="fade-up" data-aos-duration="2100">
           <div className="home-projects__intro">
             {copy.badge ? (
               <span className="home-badge home-badge--solid-yellow">{copy.badge}</span>
@@ -245,7 +246,7 @@ export function ProjectTabsSection({
           ) : null}
         </div>
 
-        <div className="home-projects__chips" role="list">
+        <div className="home-projects__chips" role="list" data-aos="fade-up" data-aos-duration="2100">
           {ciudades.map((c) => {
             const value = String(c.id)
             return (
@@ -275,7 +276,7 @@ export function ProjectTabsSection({
           </p>
         ) : null}
 
-        <div className="home-projects__grid">
+        <div className="home-projects__grid" data-aos="fade-up" data-aos-duration="2100">
           {items.map((item) => (
             <ProjectCardView key={item.uuid} item={item} />
           ))}
