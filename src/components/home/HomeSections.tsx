@@ -23,6 +23,7 @@ import {
 import { HeroMediaSlider } from './HeroMediaSlider'
 import { ProjectTabsSection } from './ProjectTabsSection'
 import novedadesBlobImg from '../../assets/images/icon-bg.png'
+import finalBlobImg from '../../assets/images/icon-bgFinal.png'
 import '../../styles/layout/home.scss'
 
 function sectionClassName(...parts: Array<string | false | null | undefined>): string {
@@ -641,8 +642,9 @@ function SectionRenderer({
         <SectionShell className="home-final" background={section.background}>
           <div className="home-container" data-aos="zoom-in" data-aos-duration="1600">
             <div className="home-final__box">
-              <div className="home-final__blob home-final__blob--left" aria-hidden />
-              <div className="home-final__blob home-final__blob--right" aria-hidden />
+              <div className="home-final__blob home-final__blob--left" aria-hidden>
+                <img src={finalBlobImg} alt="" />
+              </div>
               {section.data.badge ? (
                 <span className="home-badge">{section.data.badge}</span>
               ) : null}
