@@ -284,7 +284,7 @@ function SectionRenderer({
           <div className="home-why__blobs" aria-hidden />
           <div className="home-container">
             {section.data.badge ? (
-              <span className="home-badge home-badge--solid-yellow">{section.data.badge}</span>
+              <span className="home-badge home-badge--solid-yellow home-badge-yellow">{section.data.badge}</span>
             ) : null}
             <h2 className="home-title home-title--light">{section.data.title}</h2>
             {section.data.text ? (
@@ -324,7 +324,7 @@ function SectionRenderer({
             />
             <div className="home-assistant__panel">
               {section.data.badge ? (
-                <span className="home-badge home-badge--yellow">{section.data.badge}</span>
+                <span className="home-badge home-badge--solid-yellow">{section.data.badge}</span>
               ) : null}
               <h2 className="home-title">{section.data.title}</h2>
               {section.data.text ? <p className="home-text">{section.data.text}</p> : null}
