@@ -23,9 +23,11 @@ function formatComparePrice(item: ProyectoCard, currency: CurrencyCode): string 
   const amount = resolvePriceAmount(item, currency)
   if (amount == null) return 'Consultar'
   if (currency === 'USD') {
-    return new Intl.NumberFormat('es-CO', {
-      maximumFractionDigits: 0,
-    }).format(amount) + ' USD'
+    return (
+      new Intl.NumberFormat('es-CO', {
+        maximumFractionDigits: 0,
+      }).format(amount) + ' USD'
+    )
   }
   return new Intl.NumberFormat('es-CO', {
     style: 'currency',
@@ -72,73 +74,71 @@ export function CompareTable({ projects, onRemove, onAddSlot, canAdd }: Props) {
   const dash = t(locale, 'compareDash')
   const slots: Array<ProyectoCard | null> = [...projects]
   while (slots.length < COMPARE_MAX) slots.push(null)
+  const filled = projects.filter(Boolean).length
 
   return (
     <div className="comparador__table-wrap">
-      <div className="comparador__table" role="table" aria-label={t(locale, 'compareCounting').replace('{n}', String(projects.filter(Boolean).length))}>
-        <div className="comparador__label-col" role="rowgroup">
-          <div className="comparador__label-spacer" aria-hidden />
-          {ROWS.map((row) => (
-            <div key={row.key} className="comparador__row-label" role="rowheader">
-              {t(locale, row.labelKey)}
-            </div>
-          ))}
-        </div>
-
-        {slots.map((item, idx) => (
-          <div key={item?.uuid ?? `slot-${idx}`} className="comparador__col" role="columnheader">
-            {item ? (
-              <>
-                <div className="comparador__col-head">
-                  <h3 className="comparador__col-title">{item.title}</h3>
-                  <div
-                    className="comparador__thumb"
-                    style={{ backgroundImage: `url(${proyectoImageUrl(item.image_url)})` }}
-                    role="img"
-                    aria-label={item.title}
-                  />
-                  <div className="comparador__col-actions">
-                    <Link
-                      className="home-btn"
-                      to={localizedPath(item.url || '/', locale)}
-                    >
-                      {t(locale, 'verProyecto')}
-                    </Link>
-                    <button
-                      type="button"
-                      className="comparador__remove"
-                      onClick={() => onRemove(item.id)}
-                    >
-                      {t(locale, 'compareRemove')}
-                    </button>
-                  </div>
-                </div>
-                {ROWS.map((row) => (
-                  <div key={row.key} className="comparador__cell" role="cell">
-                    {cellValue(item, row.key, currency, dash)}
-                  </div>
-                ))}
-              </>
-            ) : (
-              <>
+      <div
+        className="comparador__table"
+        role="table"
+        aria-label={t(locale, 'compareCounting').replace('{n}', String(filled))}
+      >
+        {/* Row 1: corner + project headers (same CSS grid row → shared height) */}
+        <div className="comparador__corner" aria-hidden />
+        {slots.map((item, idx) =>
+          item ? (
+            <div key={item.uuid} className="comparador__col-head" role="columnheader">
+              <h3 className="comparador__col-title">{item.title}</h3>
+              <div
+                className="comparador__thumb"
+                style={{ backgroundImage: `url(${proyectoImageUrl(item.image_url)})` }}
+                role="img"
+                aria-label={item.title}
+              />
+              <div className="comparador__col-actions">
+                <Link className="home-btn" to={localizedPath(item.url || '/', locale)}>
+                  {t(locale, 'verProyecto')}
+                </Link>
                 <button
                   type="button"
-                  className="comparador__slot"
-                  onClick={onAddSlot}
-                  disabled={!canAdd}
+                  className="comparador__remove"
+                  onClick={() => onRemove(item.id)}
                 >
-                  <span className="comparador__slot-plus" aria-hidden>
-                    +
-                  </span>
-                  {t(locale, 'compareEmptySlot')}
+                  {t(locale, 'compareRemove')}
                 </button>
-                {ROWS.map((row) => (
-                  <div key={row.key} className="comparador__cell" role="cell">
-                    {dash}
-                  </div>
-                ))}
-              </>
-            )}
+              </div>
+            </div>
+          ) : (
+            <button
+              key={`slot-${idx}`}
+              type="button"
+              className="comparador__slot"
+              onClick={onAddSlot}
+              disabled={!canAdd}
+            >
+              <span className="comparador__slot-plus" aria-hidden>
+                +
+              </span>
+              {t(locale, 'compareEmptySlot')}
+            </button>
+          ),
+        )}
+
+        {/* Attribute rows: label + 3 cells share one grid row */}
+        {ROWS.map((row) => (
+          <div key={row.key} className="comparador__attr-row" role="row">
+            <div className="comparador__row-label" role="rowheader">
+              {t(locale, row.labelKey)}
+            </div>
+            {slots.map((item, idx) => (
+              <div
+                key={`${row.key}-${item?.uuid ?? `empty-${idx}`}`}
+                className="comparador__cell"
+                role="cell"
+              >
+                {cellValue(item, row.key, currency, dash)}
+              </div>
+            ))}
           </div>
         ))}
       </div>
