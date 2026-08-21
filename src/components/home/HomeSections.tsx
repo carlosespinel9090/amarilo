@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import type { FilterOption, HomeLink, HomePayload, HomeSection, ProyectoCard } from '../../types/home'
 import { useLocale } from '../../i18n/LocaleContext'
 import { localizedPath } from '../../i18n/config'
@@ -9,6 +9,7 @@ import { proyectoImageUrl } from '../../utils/proyectoImage'
 import { buildProyectoQuery, parseProyectoFilters } from '../../utils/proyectoFilters'
 import { HeroMediaSlider } from './HeroMediaSlider'
 import { ProjectTabsSection } from './ProjectTabsSection'
+import novedadesBlobImg from '../../assets/images/icon-bg.png'
 import '../../styles/layout/home.scss'
 
 /** Rewrite legacy teaser targets to the Perfilador wizard. */
@@ -45,6 +46,38 @@ function Cta({ link, className }: { link: HomeLink | null; className?: string })
     </Link>
   )
 }
+
+/** Custom icons for the "beneficios" cards, in card order (1 -> 2 -> 3). */
+const HOME_WHY_ICONS: ReactNode[] = [
+  <svg key="1" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path
+      d="M20.5833 5.41663H5.41667C4.22005 5.41663 3.25 6.38668 3.25 7.58329V18.4166C3.25 19.6132 4.22005 20.5833 5.41667 20.5833H20.5833C21.78 20.5833 22.75 19.6132 22.75 18.4166V7.58329C22.75 6.38668 21.78 5.41663 20.5833 5.41663Z"
+      stroke="#161616"
+      strokeWidth="1.95"
+    />
+    <path d="M3.25 10.8334H22.75M8.66667 16.25H13" stroke="#161616" strokeWidth="1.95" />
+  </svg>,
+  <svg key="2" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path
+      d="M13.0007 2.16663L21.6673 6.49996V13C21.6673 18.4166 17.8757 21.6666 13.0007 23.8333C8.12565 21.6666 4.33398 18.4166 4.33398 13V6.49996L13.0007 2.16663Z"
+      stroke="#161616"
+      strokeWidth="1.95"
+    />
+    <path d="M9.75 13L11.9167 15.1667L16.25 10.8334" stroke="#161616" strokeWidth="1.95" />
+  </svg>,
+  <svg key="3" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path
+      d="M4.33398 21.125C4.33398 20.4067 4.61933 19.7178 5.12724 19.2099C5.63515 18.702 6.32402 18.4166 7.04232 18.4166H21.6673"
+      stroke="#161616"
+      strokeWidth="1.95"
+    />
+    <path
+      d="M7.04232 2.16663H21.6673V23.8333H7.04232C6.32402 23.8333 5.63515 23.548 5.12724 23.04C4.61933 22.5321 4.33398 21.8433 4.33398 21.125V4.87496C4.33398 4.15666 4.61933 3.46779 5.12724 2.95988C5.63515 2.45197 6.32402 2.16663 7.04232 2.16663Z"
+      stroke="#161616"
+      strokeWidth="1.95"
+    />
+  </svg>,
+]
 
 function SelectField({
   label,
@@ -199,7 +232,9 @@ function NovedadesCarousel({
 
   return (
     <section className="home-section home-novedades">
-      <div className="home-novedades__blob" aria-hidden />
+      <div className="home-novedades__blob" aria-hidden>
+        <img src={novedadesBlobImg} alt="" />
+      </div>
       <div className="home-container">
         <div className="home-novedades__head">
           {data.badge ? (
@@ -291,11 +326,9 @@ function SectionRenderer({
               <p className="home-text home-text--light">{section.data.text}</p>
             ) : null}
             <div className="home-why__grid">
-              {section.data.cards.map((card) => (
+              {section.data.cards.map((card, index) => (
                 <article key={card.title} className="home-why__card">
-                  <div className="home-why__icon">
-                    {card.icon_url ? <img src={card.icon_url} alt="" /> : null}
-                  </div>
+                  <div className="home-why__icon">{HOME_WHY_ICONS[index % HOME_WHY_ICONS.length]}</div>
                   <h3>{card.title}</h3>
                   <p>{card.text}</p>
                   <Cta link={card.link} className="home-why__link" />
@@ -374,7 +407,7 @@ function SectionRenderer({
         <section className="home-section home-explore">
           <div className="home-container">
             {section.data.badge ? (
-              <span className="home-badge home-badge--yellow">{section.data.badge}</span>
+              <span className="home-badge home-badge--yellow home-badge--solid-yellow">{section.data.badge}</span>
             ) : null}
             <h2 className="home-title">{section.data.title}</h2>
             {section.data.text ? <p className="home-text">{section.data.text}</p> : null}
@@ -419,7 +452,7 @@ function SectionRenderer({
             <div className="home-blog__head">
               <div>
                 {section.data.badge ? (
-                  <span className="home-badge home-badge--yellow">{section.data.badge}</span>
+                  <span className="home-badge home-badge--yellow home-badge--solid-yellow">{section.data.badge}</span>
                 ) : null}
                 <h2 className="home-title">{section.data.title}</h2>
               </div>
