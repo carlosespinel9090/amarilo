@@ -1095,10 +1095,14 @@
 /* Explora */
 .home-explore {
   padding: 96px 0;
+
+  .home-text {
+    max-width: 560px;
+  }
 }
 
 .home-explore__grid {
-  margin-top: 40px;
+  margin-top: 46px;
   display: grid;
   gap: 20px;
 
@@ -1119,7 +1123,7 @@
   color: #fff;
   display: flex;
   align-items: flex-end;
-  min-height: 420px;
+  min-height: 360px;
   background:
     linear-gradient(180deg, rgba(22, 22, 22, 0.1) 20%, rgba(22, 22, 22, 0.82) 100%),
     linear-gradient(160deg, #cfd9e2, #8fa3b3);
@@ -1133,23 +1137,23 @@
 
 .home-explore__body h3 {
   margin: 0;
-  font-size: 22px;
-  font-weight: 700;
+  font-size: 18px;
+  font-weight: 600;
 }
 
 .home-explore__body p {
-  margin: 8px 0 0;
-  font-size: 14px;
-  line-height: 1.45;
-  color: rgba(255, 255, 255, 0.85);
+  margin: 4px 0 0;
+  font-size: 13px;
+  line-height: 20.8px;
+  color: #D8E4EC;
 }
 
 .home-explore__cta {
   display: inline-block;
-  margin-top: 14px;
-  font-size: 14px;
-  font-weight: 700;
-  color: vars.$color-brand-yellow;
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #F2A900;
 }
 
 /* Últimas novedades (carousel full-bleed) */
@@ -1370,9 +1374,12 @@
 
 .home-blog__more {
   font-size: 15px;
-  font-weight: 700;
-  color: vars.$color-brand-black;
+  font-weight: 600;
+  color: #161616;
   text-decoration: none;
+  border: 1px solid #C5D0D6;
+  border-radius: vars.$radius-pill;
+  padding: 10px 24px;
 }
 
 .home-blog__grid {
@@ -1389,11 +1396,12 @@
   background: #fff;
   border-radius: 16px;
   overflow: hidden;
-  border: 1px solid #e8eef2;
   text-decoration: none;
   color: inherit;
   display: block;
   padding-bottom: 20px;
+  //min-height: 375px;
+  border: 1px solid #DEE5E9;
 }
 
 .home-blog__media {
@@ -1401,13 +1409,14 @@
   background: linear-gradient(145deg, #d9e2ea, #b7c5d1);
   background-position: center;
   margin-bottom: 16px;
+  min-height: 202px;
 }
 
 .home-blog__card h3 {
   margin: 0;
   padding: 0 20px;
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 17px;
+  font-weight: 600;
 }
 
 .home-blog__card p {
@@ -1415,7 +1424,8 @@
   padding: 0 20px;
   color: #5b6b76;
   line-height: 1.45;
-  font-size: 14px;
+  font-size: 12px;
+  font-weight: 400;
 }
 
 .home-blog__cta {

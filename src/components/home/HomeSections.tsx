@@ -404,7 +404,7 @@ function SectionRenderer({
         <section className="home-section home-explore">
           <div className="home-container">
             {section.data.badge ? (
-              <span className="home-badge home-badge--yellow">{section.data.badge}</span>
+              <span className="home-badge home-badge--yellow home-badge--solid-yellow">{section.data.badge}</span>
             ) : null}
             <h2 className="home-title">{section.data.title}</h2>
             {section.data.text ? <p className="home-text">{section.data.text}</p> : null}
@@ -449,7 +449,7 @@ function SectionRenderer({
             <div className="home-blog__head">
               <div>
                 {section.data.badge ? (
-                  <span className="home-badge home-badge--yellow">{section.data.badge}</span>
+                  <span className="home-badge home-badge--yellow home-badge--solid-yellow">{section.data.badge}</span>
                 ) : null}
                 <h2 className="home-title">{section.data.title}</h2>
               </div>
