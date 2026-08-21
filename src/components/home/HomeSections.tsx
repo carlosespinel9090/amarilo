@@ -23,7 +23,9 @@ import {
 import { HeroMediaSlider } from './HeroMediaSlider'
 import { ProjectTabsSection } from './ProjectTabsSection'
 import novedadesBlobImg from '../../assets/images/icon-bg.png'
-import finalBlobImg from '../../assets/images/icon-bgFinal.png'
+import finalCtaBgImg from '../../assets/images/final-cta-bg.jpg'
+import whatsappIconImg from '../../assets/images/icon-whatsapp.png'
+import asistenteDecorImg from '../../assets/images/asistente-decor.png'
 import '../../styles/layout/home.scss'
 
 function sectionClassName(...parts: Array<string | false | null | undefined>): string {
@@ -484,8 +486,22 @@ function SectionRenderer({
     case 'asistente_split':
       return (
         <SectionShell className="home-assistant" background={section.background}>
-          <div className="home-assistant__blob home-assistant__blob--left" aria-hidden />
-          <div className="home-assistant__blob home-assistant__blob--right" aria-hidden />
+          <div
+            className="home-assistant__decor home-assistant__decor--left"
+            aria-hidden
+            style={{
+              WebkitMaskImage: `url(${asistenteDecorImg})`,
+              maskImage: `url(${asistenteDecorImg})`,
+            }}
+          />
+          <div
+            className="home-assistant__decor home-assistant__decor--right"
+            aria-hidden
+            style={{
+              WebkitMaskImage: `url(${asistenteDecorImg})`,
+              maskImage: `url(${asistenteDecorImg})`,
+            }}
+          />
           <div className="home-container home-assistant__grid">
             <div
               className="home-assistant__media"
@@ -500,7 +516,7 @@ function SectionRenderer({
             />
             <div className="home-assistant__panel" data-aos="zoom-in" data-aos-duration="1600">
               {section.data.badge ? (
-                <span className="home-badge home-badge--solid-yellow">{section.data.badge}</span>
+                <span className="home-badge home-badge--on-yellow">{section.data.badge}</span>
               ) : null}
               <h2 className="home-title">{section.data.title}</h2>
               {section.data.text ? <p className="home-text">{section.data.text}</p> : null}
@@ -511,9 +527,9 @@ function SectionRenderer({
               </ul>
               <div className="home-assistant__actions">
                 <Cta link={section.data.primary} className="home-btn home-btn--dark" />
-                <Cta link={section.data.secondary} className="home-btn home-btn--outline" />
-                <Link className="home-btn home-btn--outline" to={pathFor('about', locale)}>
-                  {t(locale, 'conoceBlog')}
+                <Cta link={section.data.secondary} className="home-btn home-btn--white" />
+                <Link className="home-btn home-btn--white" to={pathFor('perfilador', locale)}>
+                  {t(locale, 'capacidadPago')}
                 </Link>
               </div>
             </div>
@@ -641,18 +657,36 @@ function SectionRenderer({
       return (
         <SectionShell className="home-final" background={section.background}>
           <div className="home-container" data-aos="zoom-in" data-aos-duration="1600">
-            <div className="home-final__box">
-              <div className="home-final__blob home-final__blob--left" aria-hidden>
-                <img src={finalBlobImg} alt="" />
-              </div>
-              {section.data.badge ? (
-                <span className="home-badge">{section.data.badge}</span>
-              ) : null}
-              <h2>{section.data.title}</h2>
-              {section.data.text ? <p>{section.data.text}</p> : null}
-              <div className="home-final__actions">
-                <Cta link={section.data.primary} className="home-btn home-btn--white" />
-                <Cta link={section.data.secondary} className="home-btn home-btn--dark" />
+            <div
+              className="home-final__box"
+              style={{ backgroundImage: `url(${finalCtaBgImg})` }}
+            >
+              <div className="home-final__content">
+                {section.data.badge ? (
+                  <span className="home-badge">{section.data.badge}</span>
+                ) : null}
+                <h2>{section.data.title}</h2>
+                {section.data.text ? <p>{section.data.text}</p> : null}
+                <div className="home-final__actions">
+                  <Cta link={section.data.primary} className="home-btn home-btn--white" />
+                  {section.data.secondary ? (
+                    <a
+                      className="home-btn home-btn--wa"
+                      href={section.data.secondary.url}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <img
+                        className="home-final__wa-icon"
+                        src={whatsappIconImg}
+                        alt=""
+                        width={18}
+                        height={18}
+                      />
+                      <span>{section.data.secondary.title}</span>
+                    </a>
+                  ) : null}
+                </div>
               </div>
             </div>
           </div>

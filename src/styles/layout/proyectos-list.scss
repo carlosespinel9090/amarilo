@@ -611,76 +611,8 @@ $pl-grid-row-gap: 56px;
   color: #5b6b76;
 }
 
-/* FINAL CTA: pad 48, 1200 wide inside shell */
-.proyectos-list__cta {
-  padding: 0 0 80px;
-  background: #f7f8fa;
-}
-
-.proyectos-list__cta-box {
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  padding: 40px 32px;
-  border-radius: 24px;
-  background: vars.$color-brand-yellow;
-
-  @media (min-width: vars.$breakpoint-md) {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    padding: 48px;
-    min-height: 282px;
-  }
-}
-
-.proyectos-list__cta-blob {
-  position: absolute;
-  left: -40px;
-  top: -30%;
-  width: 180px;
-  height: 160%;
-  background: #161616;
-  border-radius: 45% 55% 50% 50% / 50% 45% 55% 50%;
-  opacity: 0.95;
-  pointer-events: none;
-}
-
-.proyectos-list__cta-copy {
-  position: relative;
-  z-index: 1;
-  max-width: 520px;
-
-  h2 {
-    margin: 0 0 12px;
-    font-size: 28px;
-    font-weight: 700;
-    line-height: 1.2;
-  }
-
-  p {
-    margin: 0;
-    font-size: 15px;
-    line-height: 1.5;
-    color: rgba(22, 22, 22, 0.8);
-  }
-}
-
-.proyectos-list__cta-actions {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-
-  .home-btn {
-    min-height: 54px;
-  }
-}
-
-.proyectos-list__cta-wa {
-  background: transparent;
-  border-color: #161616;
+/* FINAL CTA: reuses .home-final styles from home.scss */
+.proyectos-list__cta.home-final {
+  padding: 40px 0 80px;
+  background: #f7f9fa;
 }

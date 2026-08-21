@@ -13,6 +13,8 @@ import { localizedPath } from '../../i18n/config'
 import { t } from '../../i18n/ui'
 import { ProjectCardView } from '../../components/home/ProjectCard'
 import { HeroMediaSlider } from '../../components/home/HeroMediaSlider'
+import finalCtaBgImg from '../../assets/images/final-cta-bg.jpg'
+import whatsappIconImg from '../../assets/images/icon-whatsapp.png'
 import '../../styles/layout/home.scss'
 import '../../styles/layout/proyectos-list.scss'
 
@@ -523,26 +525,35 @@ export function ProyectosList() {
         </div>
       </div>
 
-      <section className="proyectos-list__cta">
+      <section className="home-final proyectos-list__cta">
         <div className="proyectos-list__shell">
-          <div className="proyectos-list__cta-box">
-            <div className="proyectos-list__cta-blob" aria-hidden />
-            <div className="proyectos-list__cta-copy">
+          <div
+            className="home-final__box"
+            style={{ backgroundImage: `url(${finalCtaBgImg})` }}
+          >
+            <div className="home-final__content">
               <h2>{t(locale, 'listoHogar')}</h2>
               <p>{t(locale, 'listoHogarSub')}</p>
-            </div>
-            <div className="proyectos-list__cta-actions">
-              <Link className="home-btn home-btn--white" to={localizedPath('/contacto', locale)}>
-                {t(locale, 'quieroContactoCta')}
-              </Link>
-              <a
-                className="home-btn home-btn--outline proyectos-list__cta-wa"
-                href="https://wa.me/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                {t(locale, 'whatsappCta')}
-              </a>
+              <div className="home-final__actions">
+                <Link className="home-btn home-btn--white" to={localizedPath('/contacto', locale)}>
+                  {t(locale, 'quieroContactoCta')}
+                </Link>
+                <a
+                  className="home-btn home-btn--wa"
+                  href="https://wa.me/573000000000"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <img
+                    className="home-final__wa-icon"
+                    src={whatsappIconImg}
+                    alt=""
+                    width={18}
+                    height={18}
+                  />
+                  <span>{t(locale, 'whatsappCta')}</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>
